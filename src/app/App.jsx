@@ -1,25 +1,41 @@
-import { Routes, Route, Link } from 'react-router-dom';
+import React from 'react';
+import { BrowserRouter, Routes, Route, Link, Outlet } from 'react-router-dom';
+import { Toaster } from 'sonner'; // <--- 1. IMPORT THƯ VIỆN THÔNG BÁO
+
 import { HomePage } from '../apps/customer/pages/HomePage';
 import { LoginPage } from '../apps/customer/pages/LoginPage';
 
-function App() {
+const MainLayout = () => {
   return (
-    <div className="min-h-screen bg-[var(--color-background-light)]">
-      {/* Đây là Thanh điều hướng (Navbar) tạm thời */}
-      <nav className="p-4 text-white bg-gray-800 space-x-4">
-        <Link to="/" className="hover:text-gray-300">Trang Chủ</Link>
-        <Link to="/login" className="hover:text-gray-300">Đăng Nhập</Link>
-      </nav>
+    <div className="min-h-screen flex flex-col font-sans bg-[var(--color-background-light)] text-slate-900">
+      <header className="p-4 bg-white shadow-md flex gap-4 justify-center">
+        <Link to="/" className="text-primary font-bold hover:underline">Trang chủ</Link>
+        <Link to="/login" className="text-primary font-bold hover:underline">Đăng nhập</Link>
+      </header>
 
-      {/* Đây là nơi Router sẽ thay đổi nội dung trang */}
-      <main>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/login" element={<LoginPage />} />
-        </Routes>
-      </main>
+      <div className="grow">
+        <Outlet />
+      </div>
+      
+      <footer className="p-4 bg-gray-800 text-white text-center mt-auto">
+        Footer của FLUXIFY
+      </footer>
+
+      {/* 2. ĐẶT CÁI LOA Ở ĐÂY ĐỂ NÓ KÊU TRÊN TOÀN TRANG WEB */}
+      <Toaster position="top-right" richColors />
     </div>
   );
-}
+};
 
-export default App;
+export default function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<MainLayout />}>
+          <Route index element={<HomePage />} />
+          <Route path="login" element={<LoginPage />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  );
+}   
