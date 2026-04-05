@@ -18,3 +18,15 @@ body {
   background-color: var(--color-background-light);
   color: #0f172a;   /* Đặt màu chữ mặc định (màu xanh đen đậm) */
 }
+
+/* Tắt icon con mắt mặc định trên trình duyệt Edge/IE */
+input::-ms-reveal,
+input::-ms-clear {
+  display: none;
+}
+
+/* Một số trình duyệt khác (nếu có) cũng sẽ bị ẩn đi */
+input::-webkit-contacts-auto-fill-button,
+input::-webkit-credentials-auto-fill-button {
+  display: none !important;
+}
