@@ -4,14 +4,12 @@ import { Toaster } from 'sonner'; // <--- 1. IMPORT THƯ VIỆN THÔNG BÁO
 
 import { HomePage } from '../apps/customer/pages/HomePage';
 import { LoginPage } from '../apps/customer/pages/LoginPage';
+import Header from '../apps/customer/widgets/Header';
 
 const MainLayout = () => {
   return (
     <div className="min-h-screen flex flex-col font-sans bg-[var(--color-background-light)] text-slate-900">
-      <header className="p-4 bg-white shadow-md flex gap-4 justify-center">
-        <Link to="/" className="text-primary font-bold hover:underline">Trang chủ</Link>
-        <Link to="/login" className="text-primary font-bold hover:underline">Đăng nhập</Link>
-      </header>
+      <Header />
 
       <div className="grow">
         <Outlet />
