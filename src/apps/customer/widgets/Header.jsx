@@ -1,9 +1,11 @@
 import React from 'react';
 import { Search, ShoppingCart, User, Menu } from 'lucide-react'; // Thư viện Icon
 import { Link, useLocation } from 'react-router-dom';
+import { useAppContext } from '../../../app/providers/AppContext';
 
 export default function Header() {
   const location = useLocation(); // Dùng để biết ta đang ở trang nào để bôi màu xanh cho Menu đó
+  const {cartCount} = useAppContext();
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-slate-200 bg-white/80 backdrop-blur-md">
@@ -56,7 +58,7 @@ export default function Header() {
             <button className="relative p-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors" title="Giỏ hàng">
               <ShoppingCart />
               {/* Dấu chấm đỏ báo có hàng trong giỏ (tạm thời để cứng số 3) */}
-              <span className="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">3</span>
+              <span className="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white"> {cartCount} </span>
             </button>
             
             {/* Nút Menu Hamburger cho Mobile */}
