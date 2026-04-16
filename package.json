@@ -1,9 +1,5 @@
 {
-<<<<<<< HEAD
   "name": "merchant",
-=======
-  "name": "testfe",
->>>>>>> 5da6e881cce55fed747c9a5e45e1f41494c3555b
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -14,15 +10,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
-<<<<<<< HEAD
     "@tanstack/react-query": "^5.99.0",
     "axios": "^1.15.0",
     "lucide-react": "^0.577.0",
-=======
-    "axios": "^1.14.0",
-    "jwt-decode": "^4.0.0",
-    "lucide-react": "^1.7.0",
->>>>>>> 5da6e881cce55fed747c9a5e45e1f41494c3555b
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "react-router-dom": "^7.14.0",
@@ -34,23 +24,13 @@
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.1",
-<<<<<<< HEAD
     "autoprefixer": "^10.4.27",
-=======
->>>>>>> 5da6e881cce55fed747c9a5e45e1f41494c3555b
     "eslint": "^9.39.4",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.4.0",
-<<<<<<< HEAD
     "postcss": "^8.5.9",
     "tailwindcss": "^4.2.2",
     "vite": "^8.0.4"
   }
 }
-=======
-    "tailwindcss": "^4.2.2",
-    "vite": "^8.0.1"
-  }
-}
->>>>>>> 5da6e881cce55fed747c9a5e45e1f41494c3555b
