@@ -8,7 +8,6 @@ import Login from '../pages/login/Login';
 import DashboardLayout from '../widgets/Layout/DashboardLayout';
 import Products from '../pages/products/Products';
 import Categories from '../pages/categories/Categories';
-import Inventory from '../pages/inventory/Inventory';
 import Orders from '../pages/orders/Orders';
 import ThemeEditor from '../pages/admin/ThemeEditor';
 import PagesManager from '../pages/admin/PagesManager';
@@ -56,7 +55,6 @@ function AppContent() {
                 <Route index element={<Home />} />
                 <Route path="products" element={<Products />} />
                 <Route path="products/categories" element={<Categories />} />
-                <Route path="products/inventory" element={<Inventory />} />
                 <Route path="orders" element={<Orders />} />
                 <Route path="admin/themes" element={<ThemeEditor />} />
                 <Route path="admin/pages" element={<PagesManager />} />

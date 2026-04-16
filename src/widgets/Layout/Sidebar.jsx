@@ -60,11 +60,6 @@ export default function Sidebar() {
                 : 'text-slate-600 hover:bg-slate-100 font-medium'}`}>
                 Categories
               </NavLink>
-              <NavLink to="/home/products/inventory" className={({ isActive }) => `block px-3 py-1.5 rounded-lg text-sm transition-colors duration-200 ${isActive
-                ? 'bg-slate-200 text-slate-900 font-semibold'
-                : 'text-slate-600 hover:bg-slate-100 font-medium'}`}>
-                Inventory
-              </NavLink>
             </div>)}
         </div>
 
