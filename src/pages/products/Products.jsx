@@ -397,7 +397,6 @@ function AddProductModal({ tenantId, categories, onClose, onSuccess }) {
 
 function EditProductModal({ tenantId, product, categories, onClose, onSuccess }) {
     const productId = product.id || product.productId;
-    const initialSkus = product.productSkus || product.skus || [];
     const productAttrs = parseAttr(product.attributes);
     const attrKeys = Object.keys(productAttrs);
 
@@ -412,10 +411,11 @@ function EditProductModal({ tenantId, product, categories, onClose, onSuccess })
     const [productError, setProductError] = useState('');
     const [fieldErrors, setFieldErrors] = useState({});
 
-    // SKU state
+    // SKU state — kept in local state so we can add without mutating props
+    const [skuList, setSkuList] = useState(product.productSkus || product.skus || []);
     const [skuEdits, setSkuEdits] = useState(() => {
         const m = {};
-        initialSkus.forEach(s => {
+        (product.productSkus || product.skus || []).forEach(s => {
             m[s.id] = { price: s.price ?? '', stock: s.stock ?? '0', imgUrl: s.imgUrl || '' };
         });
         return m;
@@ -499,11 +499,11 @@ function EditProductModal({ tenantId, product, categories, onClose, onSuccess })
         try {
             setAddingSkuLoading(true);
             const created = await createSku(tenantId, productId, payload);
+            setSkuList(prev => [...prev, created]);
             setSkuEdits(prev => ({
                 ...prev,
                 [created.id]: { price: created.price ?? '', stock: created.stock ?? '0', imgUrl: created.imgUrl || '' },
             }));
-            initialSkus.push(created); // mutate to show in list
             setNewSku(initNewSku());
             setShowAddSku(false);
             onSuccess();
@@ -514,7 +514,7 @@ function EditProductModal({ tenantId, product, categories, onClose, onSuccess })
         }
     };
 
-    const visibleSkus = initialSkus.filter(s => !deletedIds.has(s.id));
+    const visibleSkus = skuList.filter(s => !deletedIds.has(s.id));
 
     return (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
