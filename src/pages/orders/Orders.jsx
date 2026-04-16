@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import {
     ShoppingCart, Search, ChevronLeft, ChevronRight,
-    Loader2, AlertCircle, Eye, X, Loader
+    Loader2, AlertCircle, Eye, X
 } from 'lucide-react';
 import { useAuth } from '../../entities/auth/AuthContext';
 import { getOrders, getOrderById, updateOrderStatus } from '../../share/api/orderApi';
@@ -182,7 +182,7 @@ function OrderDetailModal({ tenantId, orderId, onClose }) {
                                         disabled={updatingStatus || !selectedStatus || selectedStatus === order.status}
                                         className="px-4 py-2 rounded-lg bg-black text-white text-sm font-medium hover:bg-slate-800 disabled:opacity-50 transition-colors flex items-center gap-2"
                                     >
-                                        {updatingStatus && <Loader className="w-4 h-4 animate-spin" />}
+                                        {updatingStatus && <Loader2 className="w-4 h-4 animate-spin" />}
                                         Update
                                     </button>
                                 </div>

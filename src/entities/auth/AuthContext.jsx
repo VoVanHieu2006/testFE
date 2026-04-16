@@ -142,8 +142,6 @@ export function AuthProvider({ children }) {
 
     // Add a newly created tenant to the user's tenant list
     const addTenant = (tenant) => {
-        console.log(tenant)
-
         const cleanTenant = {
             tenantId: tenant.id,       
             subdomain: tenant.subdomain
@@ -154,7 +152,6 @@ export function AuthProvider({ children }) {
             ...user,
             tenants: [...(user.tenants || []), cleanTenant],
         };
-        console.log(updatedUser)
         setUser(updatedUser);
         localStorage.setItem('user', JSON.stringify(updatedUser));
         setCurrentTenant(cleanTenant);
