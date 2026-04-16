@@ -21,6 +21,7 @@ export default function TenantSwitcher() {
     const displayName = currentTenant?.storeName || currentTenant?.subdomain || 'Select Store';
 
     const handleSwitch = (tenantId) => {
+        alert(tenantId)
         switchTenant(tenantId);
         setIsOpen(false);
     };
