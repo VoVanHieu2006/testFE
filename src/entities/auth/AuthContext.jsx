@@ -140,6 +140,19 @@ export function AuthProvider({ children }) {
         }
     };
 
+    // Add a newly created tenant to the user's tenant list
+    const addTenant = (tenant) => {
+        if (!user) return;
+        const updatedUser = {
+            ...user,
+            tenants: [...(user.tenants || []), tenant],
+        };
+        setUser(updatedUser);
+        localStorage.setItem('user', JSON.stringify(updatedUser));
+        setCurrentTenant(tenant);
+        localStorage.setItem('currentTenant', JSON.stringify(tenant));
+    };
+
     const value = {
         user,
         token,
@@ -149,7 +162,8 @@ export function AuthProvider({ children }) {
         login,
         logout,
         register,
-        switchTenant,  
+        switchTenant,
+        addTenant,
         isAuthenticated: !!token && !!user
     };
 

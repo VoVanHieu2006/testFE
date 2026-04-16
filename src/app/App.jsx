@@ -5,9 +5,12 @@ import { AuthProvider, useAuth } from '../entities/auth/AuthContext';
 import Start from '../pages/start/Start';
 import Register from '../pages/register/Register';
 import Login from '../pages/login/Login';
-import DashboardLayout from '../widgets/Layout/DashboardLayout'; 
+import DashboardLayout from '../widgets/Layout/DashboardLayout';
+import Products from '../pages/products/Products';
+import Categories from '../pages/categories/Categories';
+import Inventory from '../pages/inventory/Inventory';
 
-const Home = () => <div className="p-8"><h1>Home Page Coming Soon</h1></div>;
+const Home = () => <div className="p-8"><h1 className="text-xl font-bold">Home Page Coming Soon</h1></div>;
 
 function PrivateRoute({ children }) {
     const { isAuthenticated, isLoading } = useAuth();
@@ -48,6 +51,9 @@ function AppContent() {
                 }
             >
                 <Route index element={<Home />} />
+                <Route path="products" element={<Products />} />
+                <Route path="products/categories" element={<Categories />} />
+                <Route path="products/inventory" element={<Inventory />} />
             </Route>
 
             {/* Catch all */}

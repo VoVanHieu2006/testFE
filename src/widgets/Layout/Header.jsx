@@ -1,11 +1,14 @@
-import { Search, Bell, CircleHelp } from 'lucide-react'; // Thu vien icon
+import { Search, Bell, CircleHelp, Plus } from 'lucide-react'; // Thu vien icon
 import { useState, useRef, useEffect } from 'react'; // Hook trang thai, hook thay the cho bien, hook chay moi khi vao chuong trinh
 import { useNavigate } from 'react-router-dom'; // Hook dieu huong
 import { useAuth } from '../../entities/auth/AuthContext';
+import TenantSwitcher from './TenantSwitcher';
+import CreateStoreModal from './CreateStoreModal';
 
 export default function Header() {
     const [isProfileOpen, setIsProfileOpen] = useState(false); // xem profile co open ko
     const [isNotifOpen, setIsNotifOpen] = useState(false); // xem thong bao co open ko
+    const [isCreateStoreOpen, setIsCreateStoreOpen] = useState(false);
     const profileRef = useRef(null); // bien luu profile
     const notifRef = useRef(null); // bien luu thong bao
     const navigate = useNavigate(); 
@@ -40,10 +43,17 @@ export default function Header() {
         navigate('/');
         setIsProfileOpen(false);
     };
-    return (<header className="fixed top-0 right-0 w-[calc(100%-16rem)] z-40 flex justify-between items-center px-6 py-3 bg-white border-b border-[#e3e3e3] h-16">
-      <div className="flex items-center gap-2 bg-[#f8f8f8] hover:bg-[#f1f2f4] px-3 py-2 rounded-lg w-full max-w-md border border-transparent focus-within:border-[#e3e3e3] focus-within:ring-2 focus-within:ring-black focus-within:bg-white transition-all">
-        <Search className="w-4 h-4 text-gray-500 shrink-0"/>
-        <input type="text" placeholder="Search..." className="w-full bg-transparent border-none outline-none text-sm placeholder:text-gray-500"/>
+    return (<>
+    <header className="fixed top-0 right-0 w-[calc(100%-16rem)] z-40 flex justify-between items-center px-6 py-3 bg-white border-b border-[#e3e3e3] h-16">
+      <div className="flex items-center gap-3">
+        <TenantSwitcher />
+        <button
+          onClick={() => setIsCreateStoreOpen(true)}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#e3e3e3] bg-white hover:bg-[#f8f8f8] transition-colors text-sm font-medium text-slate-700"
+        >
+          <Plus className="w-4 h-4" />
+          New Store
+        </button>
       </div>
 
       <div className="flex items-center gap-4">
@@ -74,13 +84,13 @@ export default function Header() {
             setIsProfileOpen(!isProfileOpen);
             setIsNotifOpen(false);
         }} className="bg-black text-white rounded-full w-8 h-8 flex items-center justify-center font-semibold text-sm cursor-pointer hover:ring-2 hover:ring-gray-300 ring-offset-1 transition-all shrink-0">
-            JD
+            {user?.email ? user.email.charAt(0).toUpperCase() : 'U'}
           </div>
 
           {isProfileOpen && (<div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-[#e3e3e3] p-2 z-50">
               <div className="px-3 py-2 border-b border-[#e3e3e3] mb-1">
-                <p className="text-sm font-semibold text-black">John Doe</p>
-                <p className="text-sm text-gray-500">john@example.com</p>
+                <p className="text-sm font-semibold text-black truncate">{user?.email || 'User'}</p>
+                <p className="text-xs text-gray-500 capitalize">{user?.role || 'Merchant'}</p>
               </div>
               <div className="space-y-0.5">
                 <div onClick={handleAccountSettings} className="px-3 py-2 rounded-lg hover:bg-[#f8f8f8] cursor-pointer text-sm font-medium text-black transition-colors">
@@ -96,5 +106,8 @@ export default function Header() {
             </div>)}
         </div>
       </div>
-    </header>);
+    </header>
+
+    {isCreateStoreOpen && <CreateStoreModal onClose={() => setIsCreateStoreOpen(false)} />}
+    </>);
 }
