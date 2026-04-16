@@ -161,6 +161,25 @@ export function AuthProvider({ children }) {
         localStorage.setItem('currentTenant', JSON.stringify(cleanTenant));
     };
 
+    // Remove a tenant from the user's tenant list
+    const removeTenant = (tenantId) => {
+        if (!user) return;
+        const updatedTenants = (user.tenants || []).filter(t => t.tenantId !== tenantId);
+        const updatedUser = { ...user, tenants: updatedTenants };
+        setUser(updatedUser);
+        localStorage.setItem('user', JSON.stringify(updatedUser));
+        // If the deleted tenant was the current one, switch to first available
+        if (currentTenant?.tenantId === tenantId) {
+            const next = updatedTenants[0] || null;
+            setCurrentTenant(next);
+            if (next) {
+                localStorage.setItem('currentTenant', JSON.stringify(next));
+            } else {
+                localStorage.removeItem('currentTenant');
+            }
+        }
+    };
+
     const value = {
         user,
         token,
@@ -172,6 +191,7 @@ export function AuthProvider({ children }) {
         register,
         switchTenant,
         addTenant,
+        removeTenant,
         isAuthenticated: !!token && !!user
     };
 

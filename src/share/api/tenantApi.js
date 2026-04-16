@@ -14,3 +14,8 @@ export const createTenant = async (data) => {
     const res = await axiosClient.post('/tenants', data);
     return res.data;
 };
+
+export const deleteTenant = async (id) => {
+    const res = await axiosClient.delete(`/tenants/${id}`);
+    return res.data;
+};

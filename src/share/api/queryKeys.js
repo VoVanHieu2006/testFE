@@ -15,4 +15,18 @@ export const queryKeys = {
         list: (tenantId) => [...queryKeys.categories.all(tenantId), 'list'],
         detail: (tenantId, id) => [...queryKeys.categories.all(tenantId), id],
     },
+    orders: {
+        all: (tenantId) => ['orders', tenantId],
+        list: (tenantId, params) => [...queryKeys.orders.all(tenantId), 'list', params],
+        detail: (tenantId, id) => [...queryKeys.orders.all(tenantId), id],
+    },
+    themes: {
+        all: (tenantId) => ['themes', tenantId],
+        current: (tenantId) => [...queryKeys.themes.all(tenantId), 'current'],
+    },
+    pages: {
+        all: (tenantId) => ['pages', tenantId],
+        list: (tenantId) => [...queryKeys.pages.all(tenantId), 'list'],
+        detail: (tenantId, id) => [...queryKeys.pages.all(tenantId), id],
+    },
 };
