@@ -1053,7 +1053,7 @@ export default function Products() {
                                                             <td colSpan={7} className="px-0 py-0">
                                                                 <div className="bg-slate-50 border-b border-[#e3e3e3] px-12 py-3">
                                                                     <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
-                                                                        Variants of &quot;{product.name}&quot;
+                                                                        Variants of &ldquo;{product.name}&rdquo;
                                                                     </p>
                                                                     <table className="w-full text-xs">
                                                                         <thead>
