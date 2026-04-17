@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { ChevronDown, Store, Check, Trash2, Loader2 } from 'lucide-react';
+import { ChevronDown, Store, Check, Trash2, Loader2, ExternalLink } from 'lucide-react';
 import { useAuth } from '../../entities/auth/AuthContext';
 import { deleteTenant } from '../../share/api/tenantApi';
 
@@ -98,13 +98,25 @@ export default function TenantSwitcher() {
                                             </button>
                                         </div>
                                     ) : (
-                                        <button
-                                            onClick={(e) => { e.stopPropagation(); setConfirmDeleteId(tenant.tenantId); }}
-                                            className="opacity-0 group-hover:opacity-100 mr-2 w-6 h-6 flex items-center justify-center rounded hover:bg-red-50 text-slate-400 hover:text-red-500 transition-all shrink-0"
-                                            title="Delete store"
-                                        >
-                                            <Trash2 className="w-3.5 h-3.5" />
-                                        </button>
+                                        <div className="flex items-center gap-0.5 pr-1 shrink-0">
+                                            <a
+                                                href={`/${tenant.subdomain}`}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                onClick={e => e.stopPropagation()}
+                                                title="View storefront"
+                                                className="opacity-0 group-hover:opacity-100 w-6 h-6 flex items-center justify-center rounded hover:bg-slate-100 text-slate-400 hover:text-slate-700 transition-all"
+                                            >
+                                                <ExternalLink className="w-3.5 h-3.5" />
+                                            </a>
+                                            <button
+                                                onClick={(e) => { e.stopPropagation(); setConfirmDeleteId(tenant.tenantId); }}
+                                                className="opacity-0 group-hover:opacity-100 w-6 h-6 flex items-center justify-center rounded hover:bg-red-50 text-slate-400 hover:text-red-500 transition-all shrink-0"
+                                                title="Delete store"
+                                            >
+                                                <Trash2 className="w-3.5 h-3.5" />
+                                            </button>
+                                        </div>
                                     )}
                                 </div>
                             ))

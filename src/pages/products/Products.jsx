@@ -1,8 +1,9 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, Fragment } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import {
     Search, Plus, ChevronLeft, ChevronRight, Package,
     Loader2, AlertCircle, Pencil, Trash2, X, Tag,
+    ChevronDown, ChevronUp,
 } from 'lucide-react';
 import { useAuth } from '../../entities/auth/AuthContext';
 import {
@@ -785,11 +786,13 @@ export default function Products() {
     const queryClient = useQueryClient();
 
     const [page, setPage] = useState(1);
+    const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
     const [search, setSearch] = useState('');
     const [searchInput, setSearchInput] = useState('');
     const [categoryId, setCategoryId] = useState('');
     const [sortBy, setSortBy] = useState('createdAt');
     const [sortDir, setSortDir] = useState('desc');
+    const [expandedIds, setExpandedIds] = useState(new Set());
 
     // modal: null | 'add' | product-object (edit)
     const [modal, setModal] = useState(null);
@@ -797,9 +800,9 @@ export default function Products() {
     const [isDeleting, setIsDeleting] = useState(false);
 
     const productsQuery = useQuery({
-        queryKey: queryKeys.products.list(tenantId, { page, pageSize: DEFAULT_PAGE_SIZE, search, categoryId, sortBy, sortDir }),
+        queryKey: queryKeys.products.list(tenantId, { page, pageSize, search, categoryId, sortBy, sortDir }),
         queryFn: () => getProducts(tenantId, {
-            page, pageSize: DEFAULT_PAGE_SIZE,
+            page, pageSize,
             search: search || undefined,
             categoryId: categoryId || undefined,
             sortBy, sortDir,
@@ -817,6 +820,26 @@ export default function Products() {
         e.preventDefault();
         setSearch(searchInput);
         setPage(1);
+        setExpandedIds(new Set());
+    };
+
+    const handlePageSizeChange = (val) => {
+        setPageSize(Number(val));
+        setPage(1);
+        setExpandedIds(new Set());
+    };
+
+    const handlePageChange = (newPage) => {
+        setPage(newPage);
+        setExpandedIds(new Set());
+    };
+
+    const toggleExpand = (productId) => {
+        setExpandedIds(prev => {
+            const next = new Set(prev);
+            next.has(productId) ? next.delete(productId) : next.add(productId);
+            return next;
+        });
     };
 
     const handleSuccess = () => {
@@ -840,7 +863,9 @@ export default function Products() {
 
     const products = productsQuery.data?.items || productsQuery.data?.data || productsQuery.data || [];
     const total = productsQuery.data?.total || productsQuery.data?.totalCount || 0;
-    const totalPages = Math.max(1, Math.ceil(total / DEFAULT_PAGE_SIZE));
+    // API returns direct array — use isLastPage when total is unavailable
+    const isLastPage = Array.isArray(products) && products.length < pageSize;
+    const totalPages = total > 0 ? Math.max(1, Math.ceil(total / pageSize)) : null;
     const categories = categoriesQuery.data?.items || categoriesQuery.data?.data || categoriesQuery.data || [];
 
     if (!tenantId) {
@@ -895,6 +920,14 @@ export default function Products() {
                     <option value="name-asc">Name A–Z</option>
                     <option value="name-desc">Name Z–A</option>
                 </select>
+
+                <select value={pageSize} onChange={e => handlePageSizeChange(e.target.value)}
+                    className="px-3 py-2 rounded-lg border border-[#e3e3e3] text-sm bg-white text-slate-700 outline-none focus:border-black">
+                    <option value={5}>5 / page</option>
+                    <option value={10}>10 / page</option>
+                    <option value={20}>20 / page</option>
+                    <option value={50}>50 / page</option>
+                </select>
             </div>
 
             {/* Table */}
@@ -915,6 +948,7 @@ export default function Products() {
                             <table className="w-full text-sm">
                                 <thead>
                                     <tr className="border-b border-[#e3e3e3] bg-[#f8f8f8]">
+                                        <th className="w-10 px-2 py-3"></th>
                                         <th className="text-left px-4 py-3 font-semibold text-slate-600">Product</th>
                                         <th className="text-left px-4 py-3 font-semibold text-slate-600">Category</th>
                                         <th className="text-left px-4 py-3 font-semibold text-slate-600">Variants</th>
@@ -926,12 +960,14 @@ export default function Products() {
                                 <tbody className="divide-y divide-[#e3e3e3]">
                                     {products.length === 0 ? (
                                         <tr>
-                                            <td colSpan={6} className="text-center py-16 text-slate-400">
+                                            <td colSpan={7} className="text-center py-16 text-slate-400">
                                                 No products found.
                                             </td>
                                         </tr>
                                     ) : (
                                         products.map(product => {
+                                            const productId = product.id || product.productId;
+                                            const isExpanded = expandedIds.has(productId);
                                             const skus = product.productSkus || product.skus || [];
                                             const totalStock = getTotalStock(product);
                                             const priceRange = getPriceRange(product);
@@ -941,60 +977,125 @@ export default function Products() {
                                                 .join(', ');
 
                                             return (
-                                                <tr key={product.id || product.productId} className="hover:bg-[#f8f8f8] transition-colors">
-                                                    <td className="px-4 py-3">
-                                                        <div className="flex items-center gap-3">
-                                                            <ProductImage imgUrls={product.imgUrls} />
-                                                            <div className="min-w-0">
-                                                                <p className="font-medium text-slate-900 truncate">{product.name}</p>
-                                                                {product.description && (
-                                                                    <p className="text-xs text-slate-400 truncate mt-0.5">{product.description}</p>
+                                                <Fragment key={productId}>
+                                                    <tr className="hover:bg-[#f8f8f8] transition-colors">
+                                                        {/* Expand toggle */}
+                                                        <td className="w-10 px-2 py-3 text-center">
+                                                            {skus.length > 0 ? (
+                                                                <button
+                                                                    onClick={() => toggleExpand(productId)}
+                                                                    className="w-7 h-7 flex items-center justify-center rounded-lg border border-[#e3e3e3] hover:bg-slate-100 text-slate-500 transition-colors mx-auto"
+                                                                    title={isExpanded ? 'Hide variants' : 'Show variants'}
+                                                                >
+                                                                    {isExpanded
+                                                                        ? <ChevronUp className="w-3.5 h-3.5" />
+                                                                        : <ChevronDown className="w-3.5 h-3.5" />}
+                                                                </button>
+                                                            ) : null}
+                                                        </td>
+                                                        <td className="px-4 py-3">
+                                                            <div className="flex items-center gap-3">
+                                                                <ProductImage imgUrls={product.imgUrls} />
+                                                                <div className="min-w-0">
+                                                                    <p className="font-medium text-slate-900 truncate">{product.name}</p>
+                                                                    {product.description && (
+                                                                        <p className="text-xs text-slate-400 truncate mt-0.5">{product.description}</p>
+                                                                    )}
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td className="px-4 py-3">
+                                                            {product.categoryName || product.category?.name ? (
+                                                                <span className="px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 text-xs font-medium">
+                                                                    {product.categoryName || product.category?.name}
+                                                                </span>
+                                                            ) : (
+                                                                <span className="text-slate-400 text-xs">—</span>
+                                                            )}
+                                                        </td>
+                                                        <td className="px-4 py-3">
+                                                            <div className="space-y-0.5">
+                                                                <span className="text-xs font-medium text-slate-700">
+                                                                    {skus.length} variant{skus.length !== 1 ? 's' : ''}
+                                                                </span>
+                                                                {attrSummary && (
+                                                                    <p className="text-xs text-slate-400">{attrSummary}</p>
                                                                 )}
                                                             </div>
-                                                        </div>
-                                                    </td>
-                                                    <td className="px-4 py-3">
-                                                        {product.categoryName || product.category?.name ? (
-                                                            <span className="px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 text-xs font-medium">
-                                                                {product.categoryName || product.category?.name}
+                                                        </td>
+                                                        <td className="px-4 py-3 text-right text-sm font-medium text-slate-900 whitespace-nowrap">
+                                                            {priceRange}
+                                                        </td>
+                                                        <td className="px-4 py-3 text-right">
+                                                            <span className={`font-medium text-sm ${typeof totalStock === 'number' && totalStock === 0 ? 'text-red-500' : 'text-slate-900'}`}>
+                                                                {totalStock}
                                                             </span>
-                                                        ) : (
-                                                            <span className="text-slate-400 text-xs">—</span>
-                                                        )}
-                                                    </td>
-                                                    <td className="px-4 py-3">
-                                                        <div className="space-y-0.5">
-                                                            <span className="text-xs font-medium text-slate-700">
-                                                                {skus.length} variant{skus.length !== 1 ? 's' : ''}
-                                                            </span>
-                                                            {attrSummary && (
-                                                                <p className="text-xs text-slate-400">{attrSummary}</p>
-                                                            )}
-                                                        </div>
-                                                    </td>
-                                                    <td className="px-4 py-3 text-right text-sm font-medium text-slate-900 whitespace-nowrap">
-                                                        {priceRange}
-                                                    </td>
-                                                    <td className="px-4 py-3 text-right">
-                                                        <span className={`font-medium text-sm ${typeof totalStock === 'number' && totalStock === 0 ? 'text-red-500' : 'text-slate-900'}`}>
-                                                            {totalStock}
-                                                        </span>
-                                                    </td>
-                                                    <td className="px-4 py-3 text-right">
-                                                        <div className="flex items-center justify-end gap-2">
-                                                            <button onClick={() => setModal(product)}
-                                                                className="w-8 h-8 flex items-center justify-center rounded-lg border border-[#e3e3e3] hover:bg-[#f8f8f8] transition-colors text-slate-600"
-                                                                title="Edit">
-                                                                <Pencil className="w-3.5 h-3.5" />
-                                                            </button>
-                                                            <button onClick={() => setDeleteTarget(product)}
-                                                                className="w-8 h-8 flex items-center justify-center rounded-lg border border-red-200 hover:bg-red-50 transition-colors text-red-500"
-                                                                title="Delete">
-                                                                <Trash2 className="w-3.5 h-3.5" />
-                                                            </button>
-                                                        </div>
-                                                    </td>
-                                                </tr>
+                                                        </td>
+                                                        <td className="px-4 py-3 text-right">
+                                                            <div className="flex items-center justify-end gap-2">
+                                                                <button onClick={() => setModal(product)}
+                                                                    className="w-8 h-8 flex items-center justify-center rounded-lg border border-[#e3e3e3] hover:bg-[#f8f8f8] transition-colors text-slate-600"
+                                                                    title="Edit">
+                                                                    <Pencil className="w-3.5 h-3.5" />
+                                                                </button>
+                                                                <button onClick={() => setDeleteTarget(product)}
+                                                                    className="w-8 h-8 flex items-center justify-center rounded-lg border border-red-200 hover:bg-red-50 transition-colors text-red-500"
+                                                                    title="Delete">
+                                                                    <Trash2 className="w-3.5 h-3.5" />
+                                                                </button>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+
+                                                    {/* SKU expand sub-row */}
+                                                    {isExpanded && skus.length > 0 && (
+                                                        <tr>
+                                                            <td colSpan={7} className="px-0 py-0">
+                                                                <div className="bg-slate-50 border-b border-[#e3e3e3] px-12 py-3">
+                                                                    <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
+                                                                        Variants of &quot;{product.name}&quot;
+                                                                    </p>
+                                                                    <table className="w-full text-xs">
+                                                                        <thead>
+                                                                            <tr className="border-b border-[#e3e3e3]">
+                                                                                <th className="text-left pb-1.5 font-semibold text-slate-500 w-48">Combination</th>
+                                                                                <th className="text-right pb-1.5 font-semibold text-slate-500 w-32">Price</th>
+                                                                                <th className="text-right pb-1.5 font-semibold text-slate-500 w-20">Stock</th>
+                                                                                <th className="text-left pb-1.5 font-semibold text-slate-500 pl-6">Image</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                            {skus.map(sku => {
+                                                                                const skuAttrs = parseAttr(sku.attributes);
+                                                                                const label = Object.entries(skuAttrs)
+                                                                                    .map(([k, v]) => `${k}: ${v}`)
+                                                                                    .join(', ') || '(Default)';
+                                                                                return (
+                                                                                    <tr key={sku.id} className="border-b border-[#e3e3e3] last:border-0">
+                                                                                        <td className="py-2 text-slate-700 font-mono">{label}</td>
+                                                                                        <td className="py-2 text-right font-medium text-slate-900">{fmtVnd(sku.price)}</td>
+                                                                                        <td className={`py-2 text-right font-medium ${sku.stock === 0 ? 'text-red-500' : 'text-slate-800'}`}>
+                                                                                            {sku.stock}
+                                                                                        </td>
+                                                                                        <td className="py-2 pl-6">
+                                                                                            {sku.imgUrl ? (
+                                                                                                <img src={sku.imgUrl} alt="sku"
+                                                                                                    className="w-8 h-8 rounded object-cover border border-[#e3e3e3]"
+                                                                                                    onError={e => { e.target.style.display = 'none'; }} />
+                                                                                            ) : (
+                                                                                                <span className="text-slate-400">—</span>
+                                                                                            )}
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                );
+                                                                            })}
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    )}
+                                                </Fragment>
                                             );
                                         })
                                     )}
@@ -1002,18 +1103,23 @@ export default function Products() {
                             </table>
                         </div>
 
-                        {total > 0 && (
+                        {(page > 1 || !isLastPage) && (
                             <div className="flex items-center justify-between px-4 py-3 border-t border-[#e3e3e3]">
                                 <span className="text-sm text-slate-500">
-                                    Showing {(page - 1) * DEFAULT_PAGE_SIZE + 1}–{Math.min(page * DEFAULT_PAGE_SIZE, total)} of {total} products
+                                    {total > 0
+                                        ? `Showing ${(page - 1) * pageSize + 1}–${Math.min(page * pageSize, total)} of ${total} products`
+                                        : `Page ${page} · ${products.length} product${products.length !== 1 ? 's' : ''}`
+                                    }
                                 </span>
                                 <div className="flex items-center gap-1">
-                                    <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}
+                                    <button onClick={() => handlePageChange(Math.max(1, page - 1))} disabled={page === 1}
                                         className="w-8 h-8 flex items-center justify-center rounded-lg border border-[#e3e3e3] disabled:opacity-40 hover:bg-[#f8f8f8] transition-colors">
                                         <ChevronLeft className="w-4 h-4" />
                                     </button>
-                                    <span className="px-3 text-sm font-medium text-slate-700">{page} / {totalPages}</span>
-                                    <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page >= totalPages}
+                                    <span className="px-3 text-sm font-medium text-slate-700">
+                                        {totalPages ? `${page} / ${totalPages}` : `Page ${page}`}
+                                    </span>
+                                    <button onClick={() => handlePageChange(page + 1)} disabled={isLastPage}
                                         className="w-8 h-8 flex items-center justify-center rounded-lg border border-[#e3e3e3] disabled:opacity-40 hover:bg-[#f8f8f8] transition-colors">
                                         <ChevronRight className="w-4 h-4" />
                                     </button>
