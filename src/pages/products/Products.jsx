@@ -18,30 +18,55 @@ const MAX_ATTR_GROUPS = 2;
 const MAX_ATTR_VALUES = 5;
 
 // ─── helpers ────────────────────────────────────────────────────────────────
-
+    // Chuyển từ JSON string thành object
 function parseAttr(str) {
     try { return typeof str === 'string' ? JSON.parse(str) : (str || {}); }
     catch { return {}; }
 }
 
+    // tạo tổ hợp các sản phẩm 
 function cartesian(groups) {
     const active = groups.filter(g => g.key.trim() && g.values.length > 0);
     if (!active.length) return [{}];
-    const [first, ...rest] = active;
-    const restCombos = cartesian(rest);
+    const [first, ...rest] = active; // lấy ra phần từ đàu tiên, vú dị: { key: "color", values: ["red", "blue"] }
+    const restCombos = cartesian(rest); // gọi phần còn lại 
     return first.values.flatMap(v => restCombos.map(c => ({ [first.key]: v, ...c })));
-}
+    // duyệt qua từng phần tử ở group hiện tại
+    // kết hợp với tổ hợp với các nhóm phía sau 
 
+    // Vú dị: 
+    //restCombos = [{ size: "S" }, { size: "M" }]
+
+    // v = "red"  → map qua restCombos:
+    //     c = { size: "S" } → { color: "red", size: "S" }
+    //     c = { size: "M" } → { color: "red", size: "M" }
+
+    // v = "blue" → map qua restCombos:
+    //     c = { size: "S" } → { color: "blue", size: "S" }
+    //     c = { size: "M" } → { color: "blue", size: "M" }
+
+    // → return [
+    //     { color: "red",  size: "S" },
+    //     { color: "red",  size: "M" },
+    //     { color: "blue", size: "S" },
+    //     { color: "blue", size: "M" },
+    // ]
+
+
+
+
+}
+    // tạo tên hiển thị cho mỗi tổ hợp
 function skuLabel(combo) {
     const vals = Object.values(combo);
     return vals.length ? vals.join(' / ') : '(Default)';
 }
-
+    // set VND 
 function fmtVnd(val) {
     if (val == null || val === '') return '—';
     return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(Number(val));
 }
-
+    // lấy khoảng giá
 function getPriceRange(product) {
     const skus = product.productSkus || product.skus || [];
     if (!skus.length) return product.price != null ? fmtVnd(product.price) : '—';
@@ -50,58 +75,92 @@ function getPriceRange(product) {
     const min = Math.min(...prices), max = Math.max(...prices);
     return min === max ? fmtVnd(min) : `${fmtVnd(min)} – ${fmtVnd(max)}`;
 }
-
+    // lấy tổng stock
 function getTotalStock(product) {
     const skus = product.productSkus || product.skus || [];
     if (!skus.length) return product.stock ?? '—';
     return skus.reduce((s, sk) => s + (sk.stock ?? 0), 0);
 }
 
-// ─── ProductImage ────────────────────────────────────────────────────────────
+// ─── Load ảnh Product ───────────────────────────────────────────────────────────
 
 function ProductImage({ imgUrls }) {
-    const src = Array.isArray(imgUrls) && imgUrls.length > 0 ? imgUrls[0] : null;
-    if (!src) {
+    const src = Array.isArray(imgUrls) && imgUrls.length > 0 ? imgUrls[0] : null; // lấy thằng đầu tiên
+    if (!src) {  // nếu không có thì in hành package có sẵn
         return (
             <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center shrink-0">
                 <Package className="w-5 h-5 text-slate-400" />
             </div>
         );
     }
-    return (
+    return ( // nếu có thì hiển thị 
         <img src={src} alt="product"
             className="w-10 h-10 rounded-lg object-cover shrink-0 border border-[#e3e3e3]"
             onError={(e) => { e.target.style.display = 'none'; }} />
     );
 }
 
-// ─── AddProductModal ─────────────────────────────────────────────────────────
+// ─── Phương thức thêm sản phẩm AddProductModal ─────────────────────────────────────────────────────────
 
-function computeSkuRows(groups, prevRows = []) {
-    const combos = cartesian(groups);
+    // tạo danh sách các SKU 
+function computeSkuRows(groups, prevRows = [] ) { //prevRows: dữ liệu sku cũ nếu có
+    const combos = cartesian(groups); // trả về tổ hợp thuộc tính 
     return combos.map(combo => {
-        const key = JSON.stringify(combo);
-        const prev = prevRows.find(r => JSON.stringify(r.combination) === key);
-        return { combination: combo, price: prev?.price ?? '', stock: prev?.stock ?? '0', imgUrl: prev?.imgUrl ?? '' };
+        const key = JSON.stringify(combo); // chuyển thành string
+        const prev = prevRows.find(r => JSON.stringify(r.combination) === key);  //  tìm SKU cũ có cùng thuộc tính
+        return { combination: combo, 
+                price: prev?.price ?? '', 
+                stock: prev?.stock ?? '0',  
+                imgUrl: prev?.imgUrl ?? '' }; 
     });
 }
 
+    // Kết quả vú dị:
+    // [
+    //     { 
+    //         combination: { size: 'S', color: 'red' }, 
+    //         price: '', 
+    //         stock: '0', 
+    //         imgUrl: '' 
+    //     },
+    //     { 
+    //         combination: { size: 'S', color: 'blue' }, 
+    //         price: '', 
+    //         stock: '0', 
+    //         imgUrl: '' 
+    //     },
+    //     { 
+    //         combination: { size: 'M', color: 'red' }, 
+    //         price: '', 
+    //         stock: '0', 
+    //         imgUrl: '' 
+    //     },
+    //     { 
+    //         combination: { size: 'M', color: 'blue' }, 
+    //         price: '', 
+    //         stock: '0', 
+    //         imgUrl: '' 
+    //     }
+    // ]
+
+
 function AddProductModal({ tenantId, categories, onClose, onSuccess }) {
-    const [name, setName] = useState('');
-    const [description, setDescription] = useState('');
+    const [name, setName] = useState(''); 
+    const [description, setDescription] = useState('');                                                         
     const [categoryId, setCategoryId] = useState('');
     const [imgUrlsText, setImgUrlsText] = useState('');
-    const [attrGroups, setAttrGroups] = useState([]);
-    const [newAttrKey, setNewAttrKey] = useState('');
-    const [skuRows, setSkuRows] = useState([{ combination: {}, price: '', stock: '0', imgUrl: '' }]);
+    const [attrGroups, setAttrGroups] = useState([]); // nhóm thuộc tính 
+    const [newAttrKey, setNewAttrKey] = useState(''); // thuộc tính mới 
+    const [skuRows, setSkuRows] = useState([{ combination: {}, price: '', stock: '0', imgUrl: '' }]); // mặc định 1 row rỗng
     const [errors, setErrors] = useState({});
     const [serverError, setServerError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
-    const recompute = useCallback((groups) => {
+    const recompute = useCallback((groups) => { //Tạo function mà không thay đổi reference mỗi lần render
         setSkuRows(prev => computeSkuRows(groups, prev));
     }, []);
 
+    // thêm vào một attribute mới
     const addAttrGroup = () => {
         const key = newAttrKey.trim();
         if (!key || attrGroups.length >= MAX_ATTR_GROUPS) return;
@@ -112,12 +171,14 @@ function AddProductModal({ tenantId, categories, onClose, onSuccess }) {
         recompute(next);
     };
 
+    // xóa đi một attribute theo indx
     const removeAttrGroup = (idx) => {
         const next = attrGroups.filter((_, i) => i !== idx);
         setAttrGroups(next);
         recompute(next);
     };
 
+    // thêm value cho attribute
     const addAttrValue = (gIdx) => {
         const g = attrGroups[gIdx];
         const val = g.newVal.trim();
@@ -129,14 +190,17 @@ function AddProductModal({ tenantId, categories, onClose, onSuccess }) {
         recompute(next);
     };
 
+
+    // xóa value attibute
     const removeAttrValue = (gIdx, vIdx) => {
         const next = attrGroups.map((g, i) =>
             i === gIdx ? { ...g, values: g.values.filter((_, vi) => vi !== vIdx) } : g
         );
         setAttrGroups(next);
         recompute(next);
-    };
+    };  
 
+    // cập nhập các field của SKU 
     const updateSkuRow = (idx, field, value) => {
         setSkuRows(prev => prev.map((r, i) => i === idx ? { ...r, [field]: value } : r));
     };
@@ -156,7 +220,7 @@ function AddProductModal({ tenantId, categories, onClose, onSuccess }) {
         const errs = validate();
         if (Object.keys(errs).length) { setErrors(errs); return; }
 
-        // Build product attributes JSON string
+        // tạo object và stringify 
         let attributesStr;
         const activeGroups = attrGroups.filter(g => g.key && g.values.length);
         if (activeGroups.length) {
@@ -165,6 +229,7 @@ function AddProductModal({ tenantId, categories, onClose, onSuccess }) {
             attributesStr = JSON.stringify(obj);
         }
 
+        // xây dựng pay load để trả về api 
         const payload = {
             name: name.trim(),
             description: description.trim() || undefined,
@@ -203,7 +268,7 @@ function AddProductModal({ tenantId, categories, onClose, onSuccess }) {
                         <X className="w-4 h-4" />
                     </button>
                 </div>
-
+                {/*----------------------------------------------- FORM ĐIỀN THÊM PRODUCT ------------------------------------------------- */} 
                 <form onSubmit={handleSubmit} className="divide-y divide-[#e3e3e3]">
                     {serverError && (
                         <div className="mx-6 mt-4 bg-red-50 border border-red-200 text-red-700 text-sm px-3 py-2 rounded-lg">{serverError}</div>
@@ -376,7 +441,7 @@ function AddProductModal({ tenantId, categories, onClose, onSuccess }) {
                         </div>
                     </div>
 
-                    {/* Footer */}
+                    {/* Bottom buttons */}
                     <div className="px-6 py-4 flex gap-3">
                         <button type="button" onClick={onClose}
                             className="flex-1 px-4 py-2 rounded-lg border border-[#e3e3e3] text-sm font-medium text-slate-700 hover:bg-[#f8f8f8] transition-colors">
@@ -394,7 +459,7 @@ function AddProductModal({ tenantId, categories, onClose, onSuccess }) {
     );
 }
 
-// ─── EditProductModal ─────────────────────────────────────────────────────────
+// ───  EditProductModal ─────────────────────────────────────────────────────────
 
 function EditProductModal({ tenantId, product, categories, onClose, onSuccess }) {
     const productId = product.id || product.productId;
@@ -408,6 +473,8 @@ function EditProductModal({ tenantId, product, categories, onClose, onSuccess })
     const [imgUrlsText, setImgUrlsText] = useState(
         Array.isArray(product.imgUrls) ? product.imgUrls.join('\n') : ''
     );
+
+
     const [isSavingProduct, setIsSavingProduct] = useState(false);
     const [productError, setProductError] = useState('');
     const [fieldErrors, setFieldErrors] = useState({});
@@ -416,14 +483,17 @@ function EditProductModal({ tenantId, product, categories, onClose, onSuccess })
     const [skuList, setSkuList] = useState(product.productSkus || product.skus || []);
     const [skuEdits, setSkuEdits] = useState(() => {
         const m = {};
-        (product.productSkus || product.skus || []).forEach(s => {
+        (product.productSkus || product.skus || []).forEach(s => { // Chỉ tính toán khi component mount (không mỗi lần render)
             m[s.id] = { price: s.price ?? '', stock: s.stock ?? '0', imgUrl: s.imgUrl || '' };
         });
         return m;
     });
+
     const [deletedIds, setDeletedIds] = useState(new Set());
     const [savingSkuId, setSavingSkuId] = useState(null);
     const [deletingSkuId, setDeletingSkuId] = useState(null);
+
+
 
     // Add SKU form
     const [showAddSku, setShowAddSku] = useState(false);
@@ -431,6 +501,17 @@ function EditProductModal({ tenantId, product, categories, onClose, onSuccess })
         price: '', stock: '0', imgUrl: '',
         ...attrKeys.reduce((a, k) => ({ ...a, [k]: '' }), {}),
     });
+    // Dú vị:
+    //attrKeys = ["color", "size"]
+    // initNewSku() = {
+    //     price: '',
+    //     stock: '0',
+    //     imgUrl: '',
+    //     color: '',
+    //     size: ''
+    // }
+
+
     const [newSku, setNewSku] = useState(initNewSku);
     const [addingSkuLoading, setAddingSkuLoading] = useState(false);
 
@@ -466,6 +547,10 @@ function EditProductModal({ tenantId, product, categories, onClose, onSuccess })
                 stock: Number(edit.stock),
                 imgUrl: edit.imgUrl || '',
             });
+
+            onSuccess();
+
+
         } catch {
             alert('Failed to update variant.');
         } finally {
@@ -1047,7 +1132,7 @@ export default function Products() {
                                                         </td>
                                                     </tr>
 
-                                                    {/* SKU expand sub-row */}
+                                                    {/* SKU expand sub-row ( combo box keo xuong trong product*/}
                                                     {isExpanded && skus.length > 0 && (
                                                         <tr>
                                                             <td colSpan={7} className="px-0 py-0">
