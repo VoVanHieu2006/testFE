@@ -1,4 +1,4 @@
-import { useState, useCallback, Fragment } from 'react';
+import { useState, useCallback, Fragment, useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import {
     Search, Plus, ChevronLeft, ChevronRight, Package,
@@ -875,14 +875,20 @@ export default function Products() {
     const [search, setSearch] = useState('');
     const [searchInput, setSearchInput] = useState('');
     const [categoryId, setCategoryId] = useState('');
-    const [sortBy, setSortBy] = useState('createdAt');
-    const [sortDir, setSortDir] = useState('desc');
+    const [sortBy, setSortBy] = useState('name');
+    const [sortDir, setSortDir] = useState('asc');
     const [expandedIds, setExpandedIds] = useState(new Set());
 
     // modal: null | 'add' | product-object (edit)
     const [modal, setModal] = useState(null);
     const [deleteTarget, setDeleteTarget] = useState(null);
     const [isDeleting, setIsDeleting] = useState(false);
+
+    useEffect(() => {
+        console.log('queryKey thay đổi:', queryKeys.products.list(tenantId, { 
+            page, pageSize, search, categoryId, sortBy, sortDir 
+        }));
+    }, [categoryId, page, pageSize, search, sortBy, sortDir, tenantId]);
 
     const productsQuery = useQuery({
         queryKey: queryKeys.products.list(tenantId, { page, pageSize, search, categoryId, sortBy, sortDir }),
@@ -900,6 +906,7 @@ export default function Products() {
         queryFn: () => getCategories(tenantId),
         enabled: !!tenantId,
     });
+    
 
     const handleSearch = (e) => {
         e.preventDefault();
@@ -952,7 +959,6 @@ export default function Products() {
     const isLastPage = Array.isArray(products) && products.length < pageSize;
     const totalPages = total > 0 ? Math.max(1, Math.ceil(total / pageSize)) : null;
     const categories = categoriesQuery.data?.items || categoriesQuery.data?.data || categoriesQuery.data || [];
-
     if (!tenantId) {
         return (
             <div className="p-8 flex items-center gap-3 text-slate-500">
@@ -986,7 +992,10 @@ export default function Products() {
                         className="flex-1 bg-transparent text-sm outline-none placeholder:text-slate-400" />
                 </form>
 
-                <select value={categoryId} onChange={e => { setCategoryId(e.target.value); setPage(1); }}
+                <select value={categoryId} onChange={e => { 
+                    setCategoryId(e.target.value); setPage(1); 
+                }}
+                    
                     className="px-3 py-2 rounded-lg border border-[#e3e3e3] text-sm bg-white text-slate-700 outline-none focus:border-black">
                     <option value="">All Categories</option>
                     {categories.map(cat => (
@@ -1000,8 +1009,10 @@ export default function Products() {
                         setSortBy(sb); setSortDir(sd); setPage(1);
                     }}
                     className="px-3 py-2 rounded-lg border border-[#e3e3e3] text-sm bg-white text-slate-700 outline-none focus:border-black">
-                    <option value="createdAt-desc">Newest first</option>
-                    <option value="createdAt-asc">Oldest first</option>
+                    <option value="id-asc">id A–Z</option>
+                    <option value="id-desc">id Z–A</option>
+                    <option value="categoryId-desc">categoryId A–Z</option>
+                    <option value="categoryId-asc">categoryId Z–A</option>
                     <option value="name-asc">Name A–Z</option>
                     <option value="name-desc">Name Z–A</option>
                 </select>
@@ -1054,13 +1065,15 @@ export default function Products() {
                                             const productId = product.id || product.productId;
                                             const isExpanded = expandedIds.has(productId);
                                             const skus = product.productSkus || product.skus || [];
+                                            const category = categories.find(m => m.id == product.categoryId);
+                                            
                                             const totalStock = getTotalStock(product);
                                             const priceRange = getPriceRange(product);
                                             const attrs = parseAttr(product.attributes);
                                             const attrSummary = Object.keys(attrs)
                                                 .map(k => `${k} (${(attrs[k] || []).length})`)
                                                 .join(', ');
-
+                                            
                                             return (
                                                 <Fragment key={productId}>
                                                     <tr className="hover:bg-[#f8f8f8] transition-colors">
@@ -1090,9 +1103,9 @@ export default function Products() {
                                                             </div>
                                                         </td>
                                                         <td className="px-4 py-3">
-                                                            {product.categoryName || product.category?.name ? (
+                                                            {category?.name ? (
                                                                 <span className="px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 text-xs font-medium">
-                                                                    {product.categoryName || product.category?.name}
+                                                                    {category?.name}
                                                                 </span>
                                                             ) : (
                                                                 <span className="text-slate-400 text-xs">—</span>

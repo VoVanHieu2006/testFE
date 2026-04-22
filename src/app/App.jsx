@@ -9,8 +9,7 @@ import DashboardLayout from '../widgets/Layout/DashboardLayout';
 import Products from '../pages/products/Products';
 import Categories from '../pages/categories/Categories';
 import Orders from '../pages/orders/Orders';
-import ThemeEditor from '../pages/admin/ThemeEditor';
-import PagesManager from '../pages/admin/PagesManager';
+
 
 const Home = () => <div className="p-8"><h1 className="text-xl font-bold">Home Page Coming Soon</h1></div>;
 
@@ -56,8 +55,7 @@ function AppContent() {
                 <Route path="products" element={<Products />} />
                 <Route path="products/categories" element={<Categories />} />
                 <Route path="orders" element={<Orders />} />
-                <Route path="admin/themes" element={<ThemeEditor />} />
-                <Route path="admin/pages" element={<PagesManager />} />
+
             </Route>
 
             {/* Catch all */}
