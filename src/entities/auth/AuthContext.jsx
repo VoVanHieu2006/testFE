@@ -59,7 +59,7 @@ export function AuthProvider({ children }) {
             tenants = data.tenants;
         }
         else if (data.tenantId && data.subdomain) {
-            tenants = [{ tenantId: data.tenantId, subdomain: data.subdomain }];
+            tenants = [{ tenantId: data.tenantId, subdomain: data.subdomain, storeName: data.storeName }];
         }
 
         return {
@@ -144,7 +144,8 @@ export function AuthProvider({ children }) {
     const addTenant = (tenant) => {
         const cleanTenant = {
             tenantId: tenant.id,       
-            subdomain: tenant.subdomain
+            subdomain: tenant.subdomain,
+            storeName: tenant.storeName,
         };
 
         if (!user) return;

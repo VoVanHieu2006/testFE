@@ -30,7 +30,9 @@ const productCardClassMap = {
 };
 
 export default function LivePreview({ themeData, pageData, activePage, storeData }) {
-  const cardClass = productCardClassMap[themeData.productCard.style] || '';
+  const cardClass = productCardClassMap[themeData.productCard?.style] || '';
+  const priceColor = themeData.productCard?.price || themeData.colors.primary;
+  const badgeColor = themeData.productCard?.badge || '#10b981';
 
   useEffect(() => {
     const fontId = 'live-preview-google-font';
@@ -54,12 +56,12 @@ export default function LivePreview({ themeData, pageData, activePage, storeData
             borderRadius: `${themeData.layout.borderRadius}px`,
             backgroundColor: themeData.productCard.backgroundColor,
             color: themeData.productCard.textColor,
-            borderColor: themeData.productCard.style === 'border' ? `${themeData.colors.textPrimary}20` : 'transparent',
+            borderColor: themeData.productCard?.style === 'border' ? `${themeData.colors.textPrimary}20` : 'transparent',
           }}
         >
           <div className={`relative w-full overflow-hidden ${compact ? 'aspect-[4/3]' : 'aspect-[3/4]'}`} style={{ backgroundColor: `${themeData.colors.textPrimary}08` }}>
             <img src={product.image} alt={product.name} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
-            <div className="absolute left-2.5 top-2.5 rounded px-2 py-1 text-[10px] font-bold uppercase text-white" style={{ backgroundColor: '#10b981' }}>
+            <div className="absolute left-2.5 top-2.5 rounded px-2 py-1 text-[10px] font-bold uppercase text-white" style={{ backgroundColor: badgeColor }}>
               {product.badge}
             </div>
           </div>
@@ -68,7 +70,7 @@ export default function LivePreview({ themeData, pageData, activePage, storeData
             <h3 className={`mb-1 font-semibold ${compact ? 'text-sm' : 'text-[17px]'}`}>{product.name}</h3>
             <p className={`line-clamp-3 opacity-70 ${compact ? 'mb-2 text-xs leading-5' : 'mb-3 text-sm leading-5'}`}>{product.desc}</p>
             <div className="mt-auto flex items-center justify-between">
-              <span className={`${compact ? 'text-[28px]' : 'text-lg'} font-bold`} style={{ color: themeData.colors.primary, fontSize: compact ? '29px' : undefined }}>
+              <span className={`${compact ? 'text-[28px]' : 'text-lg'} font-bold`} style={{ color: priceColor, fontSize: compact ? '29px' : undefined }}>
                 {product.price}
               </span>
               <button

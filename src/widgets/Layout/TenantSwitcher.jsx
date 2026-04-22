@@ -74,9 +74,16 @@ export default function TenantSwitcher() {
                                                 {(tenant.storeName || tenant.subdomain || '?').charAt(0)}
                                             </span>
                                         </div>
-                                        <span className="flex-1 text-left truncate">
-                                            {tenant.storeName || tenant.subdomain}
-                                        </span>
+                                        <div className="flex-1 min-w-0 text-left">
+                                            <p className="text-sm font-medium text-slate-800 truncate leading-tight">
+                                                {tenant.storeName || tenant.subdomain}
+                                            </p>
+                                            {tenant.storeName && tenant.subdomain && (
+                                                <p className="text-[11px] text-slate-400 truncate leading-tight">
+                                                    {tenant.subdomain}
+                                                </p>
+                                            )}
+                                        </div>
                                         {currentTenant?.tenantId === tenant.tenantId && (
                                             <Check className="w-4 h-4 text-black shrink-0" />
                                         )}

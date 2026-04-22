@@ -23,7 +23,8 @@ export const DEFAULT_THEME_SETTINGS = {
     productCard: {
         backgroundColor: '#ffffff',
         textColor: '#0f172a',
-        style: 'shadow',
+        price: '#1754cf',
+        badge: '#ef4444',
     },
 };
 export const DEFAULT_PAGE_CONTENT = {
@@ -50,7 +51,6 @@ export function loadThemeSettings() {
         if (!raw)
             return DEFAULT_THEME_SETTINGS;
         const parsed = JSON.parse(raw);
-        const style = parsed.productCard?.style;
         return {
             colors: { ...DEFAULT_THEME_SETTINGS.colors, ...parsed.colors },
             typography: { ...DEFAULT_THEME_SETTINGS.typography, ...parsed.typography },
@@ -60,7 +60,6 @@ export function loadThemeSettings() {
             productCard: {
                 ...DEFAULT_THEME_SETTINGS.productCard,
                 ...parsed.productCard,
-                style: style === 'shadow' || style === 'border' || style === 'flat' ? style : DEFAULT_THEME_SETTINGS.productCard.style,
             },
         };
     }
@@ -94,4 +93,89 @@ export function savePageContent(value) {
     if (!isBrowser())
         return;
     localStorage.setItem(PAGE_CONTENT_STORAGE_KEY, JSON.stringify(value));
+}
+
+// Convert API themeConfig → internal format
+export function apiThemeToInternal(apiTheme) {
+    if (!apiTheme) return DEFAULT_THEME_SETTINGS;
+    const d = DEFAULT_THEME_SETTINGS;
+    return {
+        colors: {
+            primary: apiTheme.colors?.primary ?? d.colors.primary,
+            backgroundMain: apiTheme.colors?.background ?? d.colors.backgroundMain,
+            textPrimary: apiTheme.colors?.text ?? d.colors.textPrimary,
+        },
+        typography: {
+            fontFamily: apiTheme.typography?.fontFamily ?? d.typography.fontFamily,
+        },
+        layout: {
+            borderRadius: apiTheme.layout?.borderRadius ?? d.layout.borderRadius,
+        },
+        header: {
+            backgroundColor: apiTheme.components?.header?.background ?? d.header.backgroundColor,
+            textColor: apiTheme.components?.header?.text ?? d.header.textColor,
+        },
+        footer: {
+            backgroundColor: apiTheme.components?.footer?.background ?? d.footer.backgroundColor,
+            textColor: apiTheme.components?.footer?.text ?? d.footer.textColor,
+        },
+        productCard: {
+            backgroundColor: apiTheme.components?.productCard?.background ?? d.productCard.backgroundColor,
+            textColor: apiTheme.components?.productCard?.text ?? d.productCard.textColor,
+            price: apiTheme.components?.productCard?.price ?? d.productCard.price,
+            badge: apiTheme.components?.productCard?.badge ?? d.productCard.badge,
+        },
+    };
+}
+
+// Convert internal format → API themeConfig
+export function internalThemeToApi(theme) {
+    return {
+        colors: {
+            primary: theme.colors.primary,
+            background: theme.colors.backgroundMain,
+            text: theme.colors.textPrimary,
+        },
+        typography: {
+            fontFamily: theme.typography.fontFamily,
+        },
+        layout: {
+            borderRadius: theme.layout.borderRadius,
+        },
+        components: {
+            header: {
+                background: theme.header.backgroundColor,
+                text: theme.header.textColor,
+            },
+            footer: {
+                background: theme.footer.backgroundColor,
+                text: theme.footer.textColor,
+            },
+            productCard: {
+                background: theme.productCard.backgroundColor,
+                text: theme.productCard.textColor,
+                price: theme.productCard.price,
+                badge: theme.productCard.badge,
+            },
+        },
+    };
+}
+
+// Convert API contentConfig → internal format
+export function apiContentToInternal(contentConfig) {
+    if (!contentConfig) return DEFAULT_PAGE_CONTENT;
+    const d = DEFAULT_PAGE_CONTENT;
+    return {
+        home: {
+            heroImageUrl: contentConfig.home?.heroImageUrl ?? d.home.heroImageUrl,
+            heroOverlayOpacity: contentConfig.home?.heroOverlayOpacity ?? d.home.heroOverlayOpacity,
+            title: contentConfig.home?.title ?? d.home.title,
+            subtitle: contentConfig.home?.subtitle ?? d.home.subtitle,
+            featuredTitle: contentConfig.home?.featuredTitle ?? d.home.featuredTitle,
+            featuredSubtitle: contentConfig.home?.featuredSubtitle ?? d.home.featuredSubtitle,
+        },
+        about: {
+            story: contentConfig.about?.story ?? d.about.story,
+        },
+    };
 }
