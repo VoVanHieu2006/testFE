@@ -1,5 +1,5 @@
 import { NavLink, useLocation } from 'react-router-dom';
-import { Home, ShoppingCart, Package, Users, BarChart2, Settings, ChevronDown, ChevronRight, Palette, FileText } from 'lucide-react';
+import { Home, ShoppingCart, Package, Users, BarChart2, Settings, ChevronDown, ChevronRight, Palette } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
 export default function Sidebar() {
@@ -76,10 +76,6 @@ export default function Sidebar() {
         <NavLink to="/home/admin/themes" className={({ isActive }) => `flex items-center gap-3 px-3 py-2 rounded-lg transition-colors duration-200 ${isActive ? 'bg-slate-200 text-slate-900 font-semibold' : 'text-slate-600 hover:bg-slate-100 font-medium'}`}>
           <Palette className="w-5 h-5"/>
           <span className="text-sm">Theme Editor</span>
-        </NavLink>
-        <NavLink to="/home/admin/pages" className={({ isActive }) => `flex items-center gap-3 px-3 py-2 rounded-lg transition-colors duration-200 ${isActive ? 'bg-slate-200 text-slate-900 font-semibold' : 'text-slate-600 hover:bg-slate-100 font-medium'}`}>
-          <FileText className="w-5 h-5"/>
-          <span className="text-sm">Pages Manager</span>
         </NavLink>
       </nav>
 

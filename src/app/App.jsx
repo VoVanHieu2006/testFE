@@ -10,7 +10,7 @@ import Products from '../pages/products/Products';
 import Categories from '../pages/categories/Categories';
 import Orders from '../pages/orders/Orders';
 import OnlineStore from '../pages/OnlineStore/OnlineStore';
-import PageManager from '../pages/PageManager/PageManager';
+
 
 
 const Home = () => <div className="p-8"><h1 className="text-xl font-bold">Home Page Coming Soon</h1></div>;
@@ -58,7 +58,6 @@ function AppContent() {
                 <Route path="products/categories" element={<Categories />} />
                 <Route path="orders" element={<Orders />} />
                 <Route path="admin/themes" element={<OnlineStore />} />
-                <Route path="admin/pages" element={<PageManager />} />
 
             </Route>
 
