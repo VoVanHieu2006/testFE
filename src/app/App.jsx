@@ -5,9 +5,17 @@ import { AuthProvider, useAuth } from '../entities/auth/AuthContext';
 import Start from '../pages/start/Start';
 import Register from '../pages/register/Register';
 import Login from '../pages/login/Login';
-import DashboardLayout from '../widgets/Layout/DashboardLayout'; 
+import DashboardLayout from '../widgets/Layout/DashboardLayout';
+import Products from '../pages/products/Products';
+import Categories from '../pages/categories/Categories';
+import Orders from '../pages/orders/Orders';
+import OnlineStore from '../pages/OnlineStore/OnlineStore';
+import Customers from '../pages/customers/Customers';
+import Analytics from '../pages/analytics/Analytics';
 
-const Home = () => <div className="p-8"><h1>Home Page Coming Soon</h1></div>;
+
+
+const Home = () => <div className="p-8"><h1 className="text-xl font-bold">Home Page Coming Soon</h1></div>;
 
 function PrivateRoute({ children }) {
     const { isAuthenticated, isLoading } = useAuth();
@@ -48,6 +56,13 @@ function AppContent() {
                 }
             >
                 <Route index element={<Home />} />
+                <Route path="products" element={<Products />} />
+                <Route path="products/categories" element={<Categories />} />
+                <Route path="orders" element={<Orders />} />
+                <Route path="customers" element={<Customers />} />
+                <Route path="analytics" element={<Analytics />} />
+                <Route path="admin/themes" element={<OnlineStore />} />
+
             </Route>
 
             {/* Catch all */}

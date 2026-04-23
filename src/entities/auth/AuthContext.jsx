@@ -59,7 +59,7 @@ export function AuthProvider({ children }) {
             tenants = data.tenants;
         }
         else if (data.tenantId && data.subdomain) {
-            tenants = [{ tenantId: data.tenantId, subdomain: data.subdomain }];
+            tenants = [{ tenantId: data.tenantId, subdomain: data.subdomain, storeName: data.storeName }];
         }
 
         return {
@@ -140,6 +140,44 @@ export function AuthProvider({ children }) {
         }
     };
 
+    // Add a newly created tenant to the user's tenant list
+    const addTenant = (tenant) => {
+        const cleanTenant = {
+            tenantId: tenant.id,       
+            subdomain: tenant.subdomain,
+            storeName: tenant.storeName,
+        };
+
+        if (!user) return;
+        const updatedUser = {
+            ...user,
+            tenants: [...(user.tenants || []), cleanTenant],
+        };
+        setUser(updatedUser);
+        localStorage.setItem('user', JSON.stringify(updatedUser));
+        setCurrentTenant(cleanTenant);
+        localStorage.setItem('currentTenant', JSON.stringify(cleanTenant));
+    };
+
+    // Remove a tenant from the user's tenant list
+    const removeTenant = (tenantId) => {
+        if (!user) return;
+        const updatedTenants = (user.tenants || []).filter(t => t.tenantId !== tenantId);
+        const updatedUser = { ...user, tenants: updatedTenants };
+        setUser(updatedUser);
+        localStorage.setItem('user', JSON.stringify(updatedUser));
+        // If the deleted tenant was the current one, switch to first available
+        if (currentTenant?.tenantId === tenantId) {
+            const next = updatedTenants[0] || null;
+            setCurrentTenant(next);
+            if (next) {
+                localStorage.setItem('currentTenant', JSON.stringify(next));
+            } else {
+                localStorage.removeItem('currentTenant');
+            }
+        }
+    };
+
     const value = {
         user,
         token,
@@ -149,7 +187,9 @@ export function AuthProvider({ children }) {
         login,
         logout,
         register,
-        switchTenant,  
+        switchTenant,
+        addTenant,
+        removeTenant,
         isAuthenticated: !!token && !!user
     };
 

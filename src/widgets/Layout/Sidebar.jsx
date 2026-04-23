@@ -1,5 +1,5 @@
 import { NavLink, useLocation } from 'react-router-dom';
-import { Home, ShoppingCart, Package, Users, BarChart2, Settings, ChevronDown, ChevronRight, Palette, FileText } from 'lucide-react';
+import { Home, ShoppingCart, Package, Users, BarChart2, Settings, ChevronDown, ChevronRight, Palette } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
 export default function Sidebar() {
@@ -8,17 +8,17 @@ export default function Sidebar() {
    
 
     useEffect(() => {
-        if (location.pathname.startsWith('/products')) { // neu dang o trang product thi se open
+        if (location.pathname.startsWith('/home/products')) { // neu dang o trang product thi se open
             setIsProductsOpen(true);
         }
     }, [location.pathname]);
     const navItems = [
-        { name: 'Home', path: '/', icon: Home },
-        { name: 'Orders', path: '/orders', icon: ShoppingCart },
+        { name: 'Home', path: '/home', icon: Home },
+        { name: 'Orders', path: '/home/orders', icon: ShoppingCart },
     ];
     const bottomNavItems = [
-        { name: 'Customers', path: '/customers', icon: Users },
-        { name: 'Analytics', path: '/analytics', icon: BarChart2 },
+        { name: 'Customers', path: '/home/customers', icon: Users },
+        { name: 'Analytics', path: '/home/analytics', icon: BarChart2 },
     ];
     return (<aside className="w-64 h-screen fixed left-0 top-0 bg-slate-50 flex flex-col p-4 z-50 border-r border-outline-variant/30">
       <div className="flex items-center gap-3 mb-8 px-2 mt-2">
@@ -41,7 +41,7 @@ export default function Sidebar() {
 
 
         <div className="space-y-1">
-          <button onClick={() => setIsProductsOpen(!isProductsOpen)} className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors duration-200 ${location.pathname.startsWith('/products')
+          <button onClick={() => setIsProductsOpen(!isProductsOpen)} className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors duration-200 ${location.pathname.startsWith('/home/products')
             ? 'bg-slate-200 text-slate-900 font-semibold'
             : 'text-slate-600 hover:bg-slate-100 font-medium'}`}>
             <Package className="w-5 h-5"/>
@@ -50,20 +50,15 @@ export default function Sidebar() {
           </button>
           
           {isProductsOpen && (<div className="pl-11 pr-2 space-y-1 mt-1">
-              <NavLink to="/products" end className={({ isActive }) => `block px-3 py-1.5 rounded-lg text-sm transition-colors duration-200 ${isActive
+              <NavLink to="/home/products" end className={({ isActive }) => `block px-3 py-1.5 rounded-lg text-sm transition-colors duration-200 ${isActive
                 ? 'bg-slate-200 text-slate-900 font-semibold'
                 : 'text-slate-600 hover:bg-slate-100 font-medium'}`}>
                 All products
               </NavLink>
-              <NavLink to="/products/categories/create" className={({ isActive }) => `block px-3 py-1.5 rounded-lg text-sm transition-colors duration-200 ${isActive
+              <NavLink to="/home/products/categories" className={({ isActive }) => `block px-3 py-1.5 rounded-lg text-sm transition-colors duration-200 ${isActive
                 ? 'bg-slate-200 text-slate-900 font-semibold'
                 : 'text-slate-600 hover:bg-slate-100 font-medium'}`}>
                 Categories
-              </NavLink>
-              <NavLink to="/products/inventory" className={({ isActive }) => `block px-3 py-1.5 rounded-lg text-sm transition-colors duration-200 ${isActive
-                ? 'bg-slate-200 text-slate-900 font-semibold'
-                : 'text-slate-600 hover:bg-slate-100 font-medium'}`}>
-                Inventory
               </NavLink>
             </div>)}
         </div>
@@ -78,18 +73,14 @@ export default function Sidebar() {
         <div className="pt-6 pb-2 px-3">
           <span className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">Sales Channels</span>
         </div>
-        <NavLink to="/admin/themes" className={({ isActive }) => `flex items-center gap-3 px-3 py-2 rounded-lg transition-colors duration-200 ${isActive ? 'bg-slate-200 text-slate-900 font-semibold' : 'text-slate-600 hover:bg-slate-100 font-medium'}`}>
+        <NavLink to="/home/admin/themes" className={({ isActive }) => `flex items-center gap-3 px-3 py-2 rounded-lg transition-colors duration-200 ${isActive ? 'bg-slate-200 text-slate-900 font-semibold' : 'text-slate-600 hover:bg-slate-100 font-medium'}`}>
           <Palette className="w-5 h-5"/>
           <span className="text-sm">Theme Editor</span>
-        </NavLink>
-        <NavLink to="/admin/pages" className={({ isActive }) => `flex items-center gap-3 px-3 py-2 rounded-lg transition-colors duration-200 ${isActive ? 'bg-slate-200 text-slate-900 font-semibold' : 'text-slate-600 hover:bg-slate-100 font-medium'}`}>
-          <FileText className="w-5 h-5"/>
-          <span className="text-sm">Pages Manager</span>
         </NavLink>
       </nav>
 
       <div className="mt-auto pt-4 border-t border-outline-variant/30">
-        <NavLink to="/settings" className="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 hover:bg-slate-100 transition-colors duration-200 font-medium">
+        <NavLink to="/home/settings" className="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 hover:bg-slate-100 transition-colors duration-200 font-medium">
           <Settings className="w-5 h-5"/>
           <span className="text-sm">Settings</span>
         </NavLink>
