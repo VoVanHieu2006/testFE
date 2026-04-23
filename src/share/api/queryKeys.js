@@ -29,4 +29,16 @@ export const queryKeys = {
         list: (tenantId) => [...queryKeys.pages.all(tenantId), 'list'],
         detail: (tenantId, id) => [...queryKeys.pages.all(tenantId), id],
     },
+    customers: {
+        all: (tenantId) => ['customers', tenantId],
+        list: (tenantId, params) => [...queryKeys.customers.all(tenantId), 'list', params],
+        detail: (tenantId, id) => [...queryKeys.customers.all(tenantId), id],
+    },
+    analytics: {
+        all: (tenantId) => ['analytics', tenantId],
+        dashboard: (tenantId, params) => [...queryKeys.analytics.all(tenantId), 'dashboard', params],
+        overview: (tenantId, params) => [...queryKeys.analytics.all(tenantId), 'overview', params],
+        topProducts: (tenantId, params) => [...queryKeys.analytics.all(tenantId), 'top-products', params],
+        ratings: (tenantId, params) => [...queryKeys.analytics.all(tenantId), 'ratings', params],
+    },
 };
