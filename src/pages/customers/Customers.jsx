@@ -24,6 +24,7 @@ const emailName = (email) => email ? email.split('@')[0] : '—';
 
 function deriveStats(customer) {
     const orders = Array.isArray(customer.orders) ? customer.orders : [];
+    
     const totalOrders = orders.length;
     const totalSpent = orders.reduce((s, o) => s + (o.totalAmount || 0), 0);
     const lastOrder = orders.length > 0
@@ -169,7 +170,9 @@ export default function Customers() {
     };
 
     const allCustomers = useMemo(() => {
+        
         const data = customersQuery.data;
+        console.log(customersQuery.data);
         return Array.isArray(data) ? data : (data?.items || data?.data || []);
     }, [customersQuery.data]);
 

@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import {
     ShoppingCart, Search, ChevronLeft, ChevronRight,
@@ -12,7 +12,7 @@ import { queryKeys } from '../../share/api/queryKeys';
 const DEFAULT_PAGE_SIZE = 10;
 
 const ORDER_STATUSES = ['Pending', 'Confirmed', 'Processing', 'Shipped', 'Delivered', 'Cancelled', 'Refunded'];
-const PAYMENT_METHODS = ['COD', 'Bank Transfer', 'Credit Card', 'Momo', 'ZaloPay'];
+const PAYMENT_METHODS = ['COD', 'BankTransfer', 'Credit Card', 'Momo', 'ZaloPay'];
 const PAYMENT_STATUSES = ['Pending', 'Paid', 'Failed', 'Refunded'];
 const SORT_OPTIONS = [
     { value: 'createdAt', label: 'Date (newest)' },
@@ -226,6 +226,8 @@ export default function Orders() {
     const [showAdvanced, setShowAdvanced] = useState(false);
     const [selectedOrderId, setSelectedOrderId] = useState(null);
 
+
+    
     const activeFilters = useMemo(() => ({
         search: search || undefined,
         status: statusFilter || undefined,
@@ -236,6 +238,7 @@ export default function Orders() {
         createdFrom: createdFrom || undefined,
         createdTo: createdTo || undefined,
         sortBy: sortBy || undefined,
+        sortDir: "desc",
         customerId: customerIdFilter || undefined,
         page,
         pageSize: DEFAULT_PAGE_SIZE,
@@ -246,6 +249,12 @@ export default function Orders() {
         queryFn: () => getOrders(tenantId, activeFilters),
         enabled: !!tenantId,
     });
+
+
+    useEffect(() => {
+        console.log("🎯 Filters đã thay đổi:", activeFilters);
+    }, [activeFilters]); // Chạy mỗi khi object activeFilters có tham chiếu mới
+
 
     const customersQuery = useQuery({
         queryKey: queryKeys.customers.list(tenantId, {}),
@@ -366,7 +375,9 @@ export default function Orders() {
                             <label className="text-xs font-medium text-slate-500">Payment Method</label>
                             <select
                                 value={paymentMethod}
-                                onChange={(e) => { setPaymentMethod(e.target.value); setPage(1); }}
+                                
+                                onChange={(e) => { 
+                                   setPaymentMethod(e.target.value); setPage(1); }}
                                 className="px-3 py-2 rounded-lg border border-[#e3e3e3] text-sm bg-white text-slate-700 outline-none focus:border-black"
                             >
                                 <option value="">Any</option>

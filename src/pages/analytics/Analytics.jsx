@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import {
     BarChart2, Loader2, AlertCircle, TrendingUp, TrendingDown,
@@ -119,6 +119,11 @@ export default function Analytics() {
         queryFn: () => getAnalyticsDashboard(tenantId, params),
         enabled: !!tenantId,
     });
+
+    useEffect(() => {
+        console.log(params)
+    })
+
 
     const { overview, ratings, topProducts } = dashboardQuery.data || {};
 

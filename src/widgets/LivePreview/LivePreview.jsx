@@ -70,7 +70,7 @@ export default function LivePreview({ themeData, pageData, activePage, storeData
             <h3 className={`mb-1 font-semibold ${compact ? 'text-sm' : 'text-[17px]'}`}>{product.name}</h3>
             <p className={`line-clamp-3 opacity-70 ${compact ? 'mb-2 text-xs leading-5' : 'mb-3 text-sm leading-5'}`}>{product.desc}</p>
             <div className="mt-auto flex items-center justify-between">
-              <span className={`${compact ? 'text-[28px]' : 'text-lg'} font-bold`} style={{ color: priceColor, fontSize: compact ? '29px' : undefined }}>
+              <span className={`${compact ? 'text-[28px]' : 'text-lg'} font-bold`} style={{ color: priceColor, fontSize: compact ? '15px' : undefined }}>
                 {product.price}
               </span>
               <button
