@@ -2,6 +2,8 @@ import { useState, useCallback } from 'react';
 import { Plus, X, Loader2 } from 'lucide-react';
 import { cartesian, computeSkuRows, skuLabel } from '../utils/productHelpers';
 import { useAddProduct } from '../hooks/useProducts';
+import { ImageUploadPreview } from '../components/ImageUploadPreview';
+
 
 const MAX_ATTR_GROUPS = 2;
 const MAX_ATTR_VALUES = 5;
@@ -25,7 +27,7 @@ function BulkApplyBar({ skuRows, onApply }) {
             <p className="text-xs font-semibold text-slate-600 uppercase tracking-wider">Apply to all variants</p>
             <div className="flex flex-wrap gap-3">
                 {/* Bulk price */}
-                <div className="flex items-center gap-2 flex-1 min-w-[220px]">
+                <div className="flex items-center gap-2 flex-1 min-w-[100px] max-w-[270px]">
                     <input
                         type="number" min="0"
                         value={bulkPrice}
@@ -43,13 +45,15 @@ function BulkApplyBar({ skuRows, onApply }) {
                     </button>
                 </div>
                 {/* Bulk image */}
-                <div className="flex items-center gap-2 flex-1 min-w-[220px]">
-                    <input
-                        type="text"
+                <div className="flex items-center gap-2 flex-1 min-w-[100px] max-w-[270px]">
+                    <ImageUploadPreview 
                         value={bulkImg}
-                        onChange={e => setBulkImg(e.target.value)}
+                        onChange={setBulkImg}
+                        multiple={false}
+                        maxFiles={1}
+                        label="Upload"
                         placeholder="Image URL for all"
-                        className="flex-1 px-3 py-2 rounded-lg border border-[#e3e3e3] text-sm outline-none focus:border-black font-mono transition-colors"
+                        className="flex-1"
                     />
                     <button
                         type="button"
@@ -128,7 +132,7 @@ function GroupApplyBar({ attrGroups, skuRows, onApplyGroup }) {
             {/* Price + Image inputs for group */}
             {selectedValue && (
                 <div className="flex flex-wrap gap-3">
-                    <div className="flex items-center gap-2 flex-1 min-w-[220px]">
+                    <div className="flex items-center gap-2 flex-1 min-w-[100px] max-w-[270px]">
                         <input
                             type="number" min="0"
                             value={groupPrice}
@@ -145,14 +149,17 @@ function GroupApplyBar({ attrGroups, skuRows, onApplyGroup }) {
                             Set price
                         </button>
                     </div>
-                    <div className="flex items-center gap-2 flex-1 min-w-[220px]">
-                        <input
-                            type="text"
-                            value={groupImg}
-                            onChange={e => setGroupImg(e.target.value)}
-                            placeholder={`Image for all ${selectedGroup}: ${selectedValue}`}
-                            className="flex-1 px-3 py-2 rounded-lg border border-[#e3e3e3] text-sm outline-none focus:border-black font-mono transition-colors"
-                        />
+                    <div className="flex items-center gap-2 flex-1 min-w-[100px] max-w-[270px]">
+                        <div className="flex-1">
+                            <ImageUploadPreview 
+                                value={groupImg}
+                                onChange={setGroupImg}
+                                multiple={false}
+                                maxFiles={1}
+                                label="Upload"
+                                placeholder={`Image for ${selectedValue}`}
+                            />
+                        </div>
                         <button
                             type="button"
                             onClick={applyGroupImg}
@@ -338,9 +345,19 @@ export function AddProductModal({ tenantId, categories, onClose, onSuccess }) {
                                 <label className="block text-sm font-medium text-slate-700 mb-1">
                                     Product Images <span className="text-slate-400 font-normal">(URLs, one per line)</span>
                                 </label>
-                                <textarea value={imgUrlsText} onChange={e => setImgUrlsText(e.target.value)} rows={2}
-                                    placeholder="https://cdn.example.com/image1.jpg"
-                                    className="w-full px-3 py-2 rounded-lg border border-[#e3e3e3] focus:border-black text-sm outline-none resize-none font-mono transition-colors" />
+                                <div>
+                                    <label className="block text-sm font-medium text-slate-700 mb-1">
+                                        Product Images <span className="text-slate-400 font-normal">(Upload or paste URLs)</span>
+                                    </label>
+                                    <ImageUploadPreview 
+                                        value={imgUrlsText}
+                                        onChange={setImgUrlsText}
+                                        multiple={true}
+                                        maxFiles={5}
+                                        label="Upload up to 5 images"
+                                        placeholder="https://cdn.example.com/image1.jpg"
+                                    />
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -441,12 +458,8 @@ export function AddProductModal({ tenantId, categories, onClose, onSuccess }) {
                                 <thead>
                                     <tr className="bg-[#f8f8f8] border-b border-[#e3e3e3]">
                                         <th className="text-left px-4 py-2.5 text-xs font-semibold text-slate-600 w-36">Variant</th>
-                                        <th className="text-left px-3 py-2.5 text-xs font-semibold text-slate-600 w-32">
-                                            Price (VND) <span className="text-red-500">*</span>
-                                        </th>
-                                        <th className="text-left px-3 py-2.5 text-xs font-semibold text-slate-600 w-24">
-                                            Stock <span className="text-red-500">*</span>
-                                        </th>
+                                        <th className="text-left px-3 py-2.5 text-xs font-semibold text-slate-600 w-32"> Price (VND) <span className="text-red-500">*</span></th>
+                                        <th className="text-left px-3 py-2.5 text-xs font-semibold text-slate-600 w-24">Stock <span className="text-red-500">*</span></th>
                                         <th className="text-left px-3 py-2.5 text-xs font-semibold text-slate-600">Image URL</th>
                                     </tr>
                                 </thead>
@@ -471,10 +484,15 @@ export function AddProductModal({ tenantId, categories, onClose, onSuccess }) {
                                                     className="w-full px-2 py-1.5 border border-[#e3e3e3] rounded-lg text-sm outline-none focus:border-black transition-colors" />
                                             </td>
                                             <td className="px-3 py-2.5">
-                                                <input type="text" value={row.imgUrl}
-                                                    onChange={e => updateSkuRow(idx, 'imgUrl', e.target.value)}
+                                                <ImageUploadPreview 
+                                                    value={row.imgUrl}
+                                                    onChange={(val) => updateSkuRow(idx, 'imgUrl', val)}
+                                                    multiple={false}
+                                                    maxFiles={1}
+                                                    label="Upload"
                                                     placeholder="https://..."
-                                                    className="w-full px-2 py-1.5 border border-[#e3e3e3] rounded-lg text-sm outline-none focus:border-black font-mono transition-colors" />
+                                                    className="min-w-[200px]"
+                                                />
                                             </td>
                                         </tr>
                                     ))}

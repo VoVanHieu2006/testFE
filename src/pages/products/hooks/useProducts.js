@@ -166,7 +166,6 @@ export function useEditProduct(tenantId, productId, onSuccess, onClose) {
             setProductError('');
             await updateProduct(tenantId, productId, data);
             onSuccess();
-            onClose();
         } catch (err) {
             const msg = err?.response?.data?.message || err?.response?.data || 'Failed to update product.';
             setProductError(typeof msg === 'string' ? msg : JSON.stringify(msg));
