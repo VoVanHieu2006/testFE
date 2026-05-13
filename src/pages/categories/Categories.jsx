@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Plus, Pencil, Trash2, Loader2, AlertCircle, CheckCircle, XCircle } from 'lucide-react';
+import { Plus, Pencil, Trash2, Loader2, AlertCircle, CheckCircle, XCircle, X } from 'lucide-react';
 import { useAuth } from '../../entities/auth/AuthContext';
 import { getCategories, createCategory, updateCategory, deleteCategory } from '../../share/api/categoryApi';
 import { queryKeys } from '../../share/api/queryKeys';
@@ -52,13 +52,15 @@ function CategoryModal({ tenantId, category, onClose, onSuccess }) {
     };
 
     return (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md">
-                <div className="flex items-center justify-between px-6 py-4 border-b border-[#e3e3e3]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-3 sm:p-4">
+            <div className="max-h-[92vh] w-full max-w-md overflow-y-auto rounded-2xl bg-white shadow-2xl">
+                <div className="flex items-center justify-between border-b border-[#e3e3e3] px-4 py-4 sm:px-6">
                     <h2 className="text-base font-semibold text-black">{category ? 'Edit Category' : 'Add Category'}</h2>
-                    <button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-[#f1f2f4] transition-colors text-slate-500">✕</button>
+                    <button onClick={onClose} className="flex h-9 w-9 items-center justify-center rounded-lg text-slate-500 transition-colors hover:bg-[#f1f2f4]">
+                        <X className="h-4 w-4" />
+                    </button>
                 </div>
-                <form onSubmit={handleSubmit} className="p-6 space-y-4">
+                <form onSubmit={handleSubmit} className="space-y-4 p-4 sm:p-6">
                     {serverError && (
                         <div className="bg-red-50 border border-red-200 text-red-700 text-sm px-3 py-2 rounded-lg">{serverError}</div>
                     )}
@@ -67,7 +69,7 @@ function CategoryModal({ tenantId, category, onClose, onSuccess }) {
                         <input
                             name="name" value={form.name} onChange={handleChange}
                             placeholder="Category name"
-                            className={`w-full px-3 py-2 rounded-lg border text-sm outline-none transition-colors ${errors.name ? 'border-red-400' : 'border-[#e3e3e3] focus:border-black'}`}
+                            className={`min-h-11 w-full rounded-lg border px-3 py-2 text-sm outline-none transition-colors ${errors.name ? 'border-red-400' : 'border-[#e3e3e3] focus:border-black'}`}
                         />
                         {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
                     </div>
@@ -77,16 +79,16 @@ function CategoryModal({ tenantId, category, onClose, onSuccess }) {
                             name="description" value={form.description} onChange={handleChange}
                             placeholder="Optional description"
                             rows={3}
-                            className="w-full px-3 py-2 rounded-lg border border-[#e3e3e3] focus:border-black text-sm outline-none resize-none transition-colors"
+                            className="w-full resize-none rounded-lg border border-[#e3e3e3] px-3 py-2 text-sm outline-none transition-colors focus:border-black"
                         />
                     </div>
                     <div className="flex items-center gap-2">
-                        <input type="checkbox" id="isActive" name="isActive" checked={form.isActive} onChange={handleChange} className="w-4 h-4 accent-black" />
+                        <input type="checkbox" id="isActive" name="isActive" checked={form.isActive} onChange={handleChange} className="h-5 w-5 accent-black" />
                         <label htmlFor="isActive" className="text-sm font-medium text-slate-700">Active</label>
                     </div>
-                    <div className="flex gap-3 pt-2">
-                        <button type="button" onClick={onClose} className="flex-1 px-4 py-2 rounded-lg border border-[#e3e3e3] text-sm font-medium text-slate-700 hover:bg-[#f8f8f8] transition-colors">Cancel</button>
-                        <button type="submit" disabled={isLoading} className="flex-1 px-4 py-2 rounded-lg bg-black text-white text-sm font-medium hover:bg-slate-800 transition-colors disabled:opacity-60 flex items-center justify-center gap-2">
+                    <div className="flex flex-col-reverse gap-3 pt-2 sm:flex-row">
+                        <button type="button" onClick={onClose} className="min-h-11 flex-1 rounded-lg border border-[#e3e3e3] px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-[#f8f8f8]">Cancel</button>
+                        <button type="submit" disabled={isLoading} className="flex min-h-11 flex-1 items-center justify-center gap-2 rounded-lg bg-black px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-slate-800 disabled:opacity-60">
                             {isLoading && <Loader2 className="w-4 h-4 animate-spin" />}
                             {isLoading ? 'Saving...' : (category ? 'Save Changes' : 'Add Category')}
                         </button>
@@ -99,8 +101,8 @@ function CategoryModal({ tenantId, category, onClose, onSuccess }) {
 
 function DeleteConfirm({ name, onConfirm, onCancel, isLoading }) {
     return (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 space-y-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-3 sm:p-4">
+            <div className="w-full max-w-sm space-y-4 rounded-2xl bg-white p-5 shadow-2xl sm:p-6">
                 <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center shrink-0">
                         <Trash2 className="w-5 h-5 text-red-600" />
@@ -110,9 +112,9 @@ function DeleteConfirm({ name, onConfirm, onCancel, isLoading }) {
                         <p className="text-sm text-slate-500 mt-0.5">Are you sure you want to delete <strong>{name}</strong>? This action cannot be undone.</p>
                     </div>
                 </div>
-                <div className="flex gap-3">
-                    <button onClick={onCancel} className="flex-1 px-4 py-2 rounded-lg border border-[#e3e3e3] text-sm font-medium text-slate-700 hover:bg-[#f8f8f8] transition-colors">Cancel</button>
-                    <button onClick={onConfirm} disabled={isLoading} className="flex-1 px-4 py-2 rounded-lg bg-red-600 text-white text-sm font-medium hover:bg-red-700 transition-colors disabled:opacity-60 flex items-center justify-center gap-2">
+                <div className="flex flex-col-reverse gap-3 sm:flex-row">
+                    <button onClick={onCancel} className="min-h-11 flex-1 rounded-lg border border-[#e3e3e3] px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-[#f8f8f8]">Cancel</button>
+                    <button onClick={onConfirm} disabled={isLoading} className="flex min-h-11 flex-1 items-center justify-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-red-700 disabled:opacity-60">
                         {isLoading && <Loader2 className="w-4 h-4 animate-spin" />}
                         {isLoading ? 'Deleting...' : 'Delete'}
                     </button>
@@ -160,7 +162,7 @@ export default function Categories() {
 
     if (!tenantId) {
         return (
-            <div className="p-8 flex items-center gap-3 text-slate-500">
+            <div className="flex items-center gap-3 p-4 text-slate-500 sm:p-8">
                 <AlertCircle className="w-5 h-5" />
                 <span>Please select a store to view categories.</span>
             </div>
@@ -168,22 +170,22 @@ export default function Categories() {
     }
 
     return (
-        <div className="p-6 space-y-6">
-            <div className="flex items-center justify-between">
-                <div>
-                    <h1 className="text-xl font-bold text-slate-900">Categories</h1>
+        <div className="space-y-5 p-4 sm:space-y-6 sm:p-6">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div className="min-w-0">
+                    <h1 className="text-xl font-bold text-slate-900 sm:text-2xl">Categories</h1>
                     <p className="text-sm text-slate-500 mt-0.5">Organize your products by category</p>
                 </div>
                 <button
                     onClick={() => { setEditCategory(null); setIsModalOpen(true); }}
-                    className="flex items-center gap-2 px-4 py-2 bg-black text-white rounded-lg text-sm font-medium hover:bg-slate-800 transition-colors"
+                    className="flex min-h-11 w-full items-center justify-center gap-2 rounded-lg bg-black px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-slate-800 sm:w-auto"
                 >
                     <Plus className="w-4 h-4" />
                     Add Category
                 </button>
             </div>
 
-            <div className="bg-white rounded-xl border border-[#e3e3e3] overflow-hidden">
+            <div className="overflow-hidden rounded-xl border border-[#e3e3e3] bg-white shadow-sm">
                 {isLoading ? (
                     <div className="flex items-center justify-center py-20">
                         <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
@@ -195,7 +197,8 @@ export default function Categories() {
                         <span className="text-sm">Failed to load categories.</span>
                     </div>
                 ) : (
-                    <table className="w-full text-sm">
+                    <div className="overflow-x-auto">
+                    <table className="w-full min-w-[640px] text-sm">
                         <thead>
                             <tr className="border-b border-[#e3e3e3] bg-[#f8f8f8]">
                                 <th className="text-left px-4 py-3 font-semibold text-slate-600">Name</th>
@@ -229,13 +232,13 @@ export default function Categories() {
                                             <div className="flex items-center justify-end gap-2">
                                                 <button
                                                     onClick={() => { setEditCategory(cat); setIsModalOpen(true); }}
-                                                    className="w-8 h-8 flex items-center justify-center rounded-lg border border-[#e3e3e3] hover:bg-[#f8f8f8] transition-colors text-slate-600"
+                                                    className="w-9 h-9 flex items-center justify-center rounded-lg border border-[#e3e3e3] hover:bg-[#f8f8f8] transition-colors text-slate-600"
                                                 >
                                                     <Pencil className="w-3.5 h-3.5" />
                                                 </button>
                                                 <button
                                                     onClick={() => setDeleteTarget(cat)}
-                                                    className="w-8 h-8 flex items-center justify-center rounded-lg border border-red-200 hover:bg-red-50 transition-colors text-red-500"
+                                                    className="w-9 h-9 flex items-center justify-center rounded-lg border border-red-200 hover:bg-red-50 transition-colors text-red-500"
                                                 >
                                                     <Trash2 className="w-3.5 h-3.5" />
                                                 </button>
@@ -246,6 +249,7 @@ export default function Categories() {
                             )}
                         </tbody>
                     </table>
+                    </div>
                 )}
             </div>
 

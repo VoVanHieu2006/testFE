@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react';
+import { createElement, useState, useMemo, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import {
     BarChart2, Loader2, AlertCircle, TrendingUp, TrendingDown,
@@ -44,14 +44,15 @@ function StatCard({ icon: Icon, label, value, sub, color = 'slate', trend }) {
         purple: 'bg-purple-50 text-purple-600',
         rose: 'bg-rose-50 text-rose-600',
     };
+    const iconElement = createElement(Icon, { className: 'w-5 h-5' });
     return (
-        <div className="bg-white rounded-xl border border-[#e3e3e3] p-5 flex items-start gap-4">
+        <div className="flex min-w-0 items-start gap-4 rounded-xl border border-[#e3e3e3] bg-white p-4 shadow-sm sm:p-5">
             <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 ${colorMap[color]}`}>
-                <Icon className="w-5 h-5" />
+                {iconElement}
             </div>
-            <div className="min-w-0">
+            <div className="min-w-0 flex-1">
                 <p className="text-xs font-medium text-slate-500 uppercase tracking-wide">{label}</p>
-                <p className="text-xl font-bold text-slate-900 mt-1 leading-none">{value}</p>
+                <p className="mt-1 break-words text-xl font-bold leading-tight text-slate-900">{value}</p>
                 {sub && <p className="text-xs text-slate-400 mt-1">{sub}</p>}
                 {trend != null && (
                     <div className={`flex items-center gap-1 mt-1 text-xs font-medium ${trend >= 0 ? 'text-green-600' : 'text-red-500'}`}>
@@ -135,7 +136,7 @@ export default function Analytics() {
 
     if (!tenantId) {
         return (
-            <div className="p-8 flex items-center gap-3 text-slate-500">
+            <div className="flex items-center gap-3 p-4 text-slate-500 sm:p-8">
                 <AlertCircle className="w-5 h-5" />
                 <span>Please select a store to view analytics.</span>
             </div>
@@ -147,11 +148,11 @@ export default function Analytics() {
         : 1;
 
     return (
-        <div className="p-6 space-y-6">
+        <div className="space-y-5 p-4 sm:space-y-6 sm:p-6">
             {/* Header */}
-            <div className="flex flex-wrap items-center justify-between gap-4">
-                <div>
-                    <h1 className="text-xl font-bold text-slate-900">Analytics</h1>
+            <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
+                <div className="min-w-0">
+                    <h1 className="text-xl font-bold text-slate-900 sm:text-2xl">Analytics</h1>
                     <p className="text-sm text-slate-500 mt-0.5">
                         {overview
                             ? `${fmtDate(overview.fromUtc)} — ${fmtDate(overview.toUtc)}`
@@ -163,32 +164,32 @@ export default function Analytics() {
                         <button
                             key={r.label}
                             onClick={() => { setSelectedPreset(i); setUseCustom(false); }}
-                            className={`px-3 py-1.5 rounded-lg text-sm font-medium border transition-colors ${!useCustom && selectedPreset === i
+                            className={`min-h-10 rounded-lg border px-3 py-1.5 text-sm font-medium transition-colors ${!useCustom && selectedPreset === i
                                 ? 'bg-slate-900 text-white border-slate-900'
                                 : 'bg-white text-slate-600 border-[#e3e3e3] hover:bg-[#f8f8f8]'}`}
                         >
                             {r.label}
                         </button>
                     ))}
-                    <div className="flex items-center gap-1">
+                    <div className="grid w-full grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-1 sm:w-auto">
                         <input
                             type="date"
                             value={customFrom}
                             onChange={(e) => { setCustomFrom(e.target.value); setUseCustom(true); }}
-                            className="px-2 py-1.5 rounded-lg border border-[#e3e3e3] text-sm outline-none focus:border-black"
+                            className="min-h-10 min-w-0 rounded-lg border border-[#e3e3e3] px-2 py-1.5 text-sm outline-none focus:border-black"
                         />
                         <span className="text-slate-400 text-sm">–</span>
                         <input
                             type="date"
                             value={customTo}
                             onChange={(e) => { setCustomTo(e.target.value); setUseCustom(true); }}
-                            className="px-2 py-1.5 rounded-lg border border-[#e3e3e3] text-sm outline-none focus:border-black"
+                            className="min-h-10 min-w-0 rounded-lg border border-[#e3e3e3] px-2 py-1.5 text-sm outline-none focus:border-black"
                         />
                     </div>
                     <button
                         onClick={() => dashboardQuery.refetch()}
                         disabled={dashboardQuery.isFetching}
-                        className="w-9 h-9 flex items-center justify-center rounded-lg border border-[#e3e3e3] hover:bg-[#f8f8f8] transition-colors text-slate-600 disabled:opacity-50"
+                        className="w-10 h-10 flex items-center justify-center rounded-lg border border-[#e3e3e3] hover:bg-[#f8f8f8] transition-colors text-slate-600 disabled:opacity-50"
                         title="Refresh"
                     >
                         <RefreshCw className={`w-4 h-4 ${dashboardQuery.isFetching ? 'animate-spin' : ''}`} />
@@ -210,7 +211,7 @@ export default function Analytics() {
                 <>
                     {/* ── Overview KPI cards ── */}
                     {overview && (
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
                             <StatCard icon={ShoppingCart} label="Total Orders" value={fmtNum(overview.totalOrders)} sub={`${overview.paidOrders} paid (${paidRate}%)`} color="blue" />
                             <StatCard icon={DollarSign} label="Gross Revenue" value={fmt(overview.grossRevenue)} sub={`Paid: ${fmt(overview.paidRevenue)}`} color="green" />
                             <StatCard icon={TrendingUp} label="Avg Order Value" value={fmt(overview.averageOrderValue)} color="purple" />
@@ -219,10 +220,10 @@ export default function Analytics() {
                     )}
 
                     {/* ── Revenue breakdown + Ratings ── */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
                         {/* Revenue breakdown */}
                         {overview && (
-                            <div className="bg-white rounded-xl border border-[#e3e3e3] p-5">
+                            <div className="rounded-xl border border-[#e3e3e3] bg-white p-4 shadow-sm sm:p-5">
                                 <p className="text-sm font-semibold text-slate-900 mb-4">Revenue Breakdown</p>
                                 <div className="space-y-4">
                                     <div>
@@ -246,7 +247,7 @@ export default function Analytics() {
                                             />
                                         </div>
                                     </div>
-                                    <div className="grid grid-cols-2 gap-3 pt-2">
+                                    <div className="grid grid-cols-1 gap-3 pt-2 sm:grid-cols-2">
                                         <div className="bg-slate-50 rounded-lg p-3">
                                             <p className="text-xs text-slate-500">Total Orders</p>
                                             <p className="text-lg font-bold text-slate-900">{fmtNum(overview.totalOrders)}</p>
@@ -270,9 +271,9 @@ export default function Analytics() {
 
                         {/* Ratings */}
                         {ratings && (
-                            <div className="bg-white rounded-xl border border-[#e3e3e3] p-5">
+                            <div className="rounded-xl border border-[#e3e3e3] bg-white p-4 shadow-sm sm:p-5">
                                 <p className="text-sm font-semibold text-slate-900 mb-4">Customer Ratings</p>
-                                <div className="flex items-center gap-4 mb-5">
+                                <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-center">
                                     <div className="text-center">
                                         <p className="text-4xl font-bold text-slate-900">{ratings.averageRating?.toFixed(1)}</p>
                                         <StarDisplay rating={ratings.averageRating} />
@@ -306,8 +307,8 @@ export default function Analytics() {
 
                     {/* ── Top Products ── */}
                     {topProducts && topProducts.length > 0 && (
-                        <div className="bg-white rounded-xl border border-[#e3e3e3] p-5">
-                            <div className="flex items-center justify-between mb-4">
+                        <div className="rounded-xl border border-[#e3e3e3] bg-white p-4 shadow-sm sm:p-5">
+                            <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                                 <p className="text-sm font-semibold text-slate-900 flex items-center gap-2">
                                     <Package className="w-4 h-4 text-slate-500" />
                                     Top Products
@@ -346,8 +347,8 @@ export default function Analytics() {
                             </div>
 
                             {/* Table */}
-                            <div className="overflow-x-auto border border-[#e3e3e3] rounded-lg">
-                                <table className="w-full text-sm">
+                            <div className="overflow-x-auto rounded-lg border border-[#e3e3e3]">
+                                <table className="w-full min-w-[760px] text-sm">
                                     <thead>
                                         <tr className="bg-[#f8f8f8] border-b border-[#e3e3e3]">
                                             <th className="text-left px-3 py-2 text-xs font-semibold text-slate-600">#</th>
@@ -386,7 +387,7 @@ export default function Analytics() {
 
                     {/* Empty state */}
                     {!overview && !ratings && !topProducts && (
-                        <div className="bg-white rounded-xl border border-[#e3e3e3] py-20 text-center">
+                        <div className="rounded-xl border border-[#e3e3e3] bg-white py-20 text-center shadow-sm">
                             <BarChart2 className="w-10 h-10 text-slate-300 mx-auto mb-3" />
                             <p className="text-slate-500 text-sm">No analytics data for this period.</p>
                         </div>

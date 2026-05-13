@@ -8,23 +8,23 @@ export function ProductFilters({
     categories,
 }) {
     return (
-        <div className="bg-white rounded-xl border border-[#e3e3e3] p-4 flex flex-wrap gap-3 items-center">
+        <div className="flex flex-wrap items-center gap-3 rounded-xl border border-[#e3e3e3] bg-white p-3 shadow-sm sm:p-4">
             <form onSubmit={handleSearch}
-                className="flex items-center gap-2 bg-[#f8f8f8] rounded-lg px-3 py-2 border border-transparent focus-within:border-[#e3e3e3] flex-1 min-w-[200px]">
+                className="flex min-h-11 w-full min-w-0 flex-1 items-center gap-2 rounded-lg border border-transparent bg-[#f8f8f8] px-3 py-2 focus-within:border-[#e3e3e3] sm:min-w-[220px]">
                 <Search className="w-4 h-4 text-slate-400 shrink-0" />
                 <input
                     type="text"
                     placeholder="Search products..."
                     value={searchInput}
                     onChange={e => setSearchInput(e.target.value)}
-                    className="flex-1 bg-transparent text-sm outline-none placeholder:text-slate-400"
+                    className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-slate-400"
                 />
             </form>
 
             <select
                 value={categoryId}
                 onChange={e => { setCategoryId(e.target.value); setPage(1); }}
-                className="px-3 py-2 rounded-lg border border-[#e3e3e3] text-sm bg-white text-slate-700 outline-none focus:border-black"
+                className="min-h-11 w-full rounded-lg border border-[#e3e3e3] bg-white px-3 py-2 text-sm text-slate-700 outline-none focus:border-black sm:w-auto"
             >
                 <option value="">All Categories</option>
                 {categories.map(cat => (
@@ -38,7 +38,7 @@ export function ProductFilters({
                     const [sb, sd] = e.target.value.split('-');
                     setSortBy(sb); setSortDir(sd); setPage(1);
                 }}
-                className="px-3 py-2 rounded-lg border border-[#e3e3e3] text-sm bg-white text-slate-700 outline-none focus:border-black"
+                className="min-h-11 w-full rounded-lg border border-[#e3e3e3] bg-white px-3 py-2 text-sm text-slate-700 outline-none focus:border-black sm:w-auto"
             >
                 <option value="id-asc">ID A–Z</option>
                 <option value="id-desc">ID Z–A</option>
@@ -51,7 +51,7 @@ export function ProductFilters({
             <select
                 value={pageSize}
                 onChange={e => handlePageSizeChange(e.target.value)}
-                className="px-3 py-2 rounded-lg border border-[#e3e3e3] text-sm bg-white text-slate-700 outline-none focus:border-black"
+                className="min-h-11 w-full rounded-lg border border-[#e3e3e3] bg-white px-3 py-2 text-sm text-slate-700 outline-none focus:border-black sm:w-auto"
             >
                 <option value={5}>5 / page</option>
                 <option value={10}>10 / page</option>

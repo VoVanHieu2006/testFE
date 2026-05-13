@@ -1,74 +1,67 @@
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../entities/auth/AuthContext';
-import { ArrowRight } from 'lucide-react';
 import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { ArrowRight, BarChart3, Package, ShoppingCart } from 'lucide-react';
+import { useAuth } from '../../entities/auth/AuthContext';
 
 export default function Start() {
     const navigate = useNavigate();
     const { isAuthenticated, isLoading } = useAuth();
-    
 
     useEffect(() => {
         if (isLoading) return;
-        
+
         if (isAuthenticated) {
             navigate('/home', { replace: true });
         }
     }, [isLoading, isAuthenticated, navigate]);
 
-
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-black flex items-center justify-center px-4">
-            <div className="text-center max-w-2xl">
-                {/* Logo */}
-                <div className="mb-8 inline-block">
-                    <div className="w-16 h-16 rounded-xl bg-white flex items-center justify-center">
-                        <div className="w-8 h-8 border-3 border-black rounded-md transform rotate-45"></div>
+        <div className="flex min-h-screen items-center justify-center overflow-hidden bg-[radial-gradient(circle_at_top_left,#334155_0,#0f172a_36%,#020617_100%)] px-4 py-10">
+            <div className="min-w-0 w-full max-w-[calc(100vw-2rem)] text-center sm:max-w-3xl">
+                <div className="mb-8 inline-flex rounded-2xl border border-white/10 bg-white/5 p-3 shadow-2xl shadow-black/30">
+                    <div className="flex h-16 w-16 items-center justify-center rounded-xl bg-white">
+                        <div className="h-8 w-8 rotate-45 rounded-md border-3 border-black"></div>
                     </div>
                 </div>
 
-                {/* Title */}
-                <h1 className="text-5xl md:text-6xl font-black text-white mb-4 leading-tight">
+                <h1 className="text-4xl font-black leading-tight text-white sm:text-5xl md:text-6xl">
                     Fluxify
                 </h1>
-                <p className="text-xl text-slate-300 mb-12 max-w-lg mx-auto">
+                <p className="mx-auto mb-10 mt-4 max-w-xl break-words text-base leading-7 text-slate-300 sm:text-xl">
                     Quản lý cửa hàng online của bạn với giao diện hiện đại, công cụ mạnh mẽ và đơn giản để sử dụng.
                 </p>
 
-                {/* Main Button */}
-                <div className="space-y-4 mb-12">
+                <div className="mb-12 space-y-4">
                     <button
                         onClick={() => navigate('/register')}
-                        className="w-full max-w-sm mx-auto block px-8 py-4 bg-white text-black text-lg font-bold rounded-xl hover:bg-slate-100 transition-all transform hover:scale-105 shadow-2xl flex items-center justify-center gap-3"
+                        className="mx-auto flex min-h-12 w-full max-w-full items-center justify-center gap-3 rounded-xl bg-white px-4 py-4 text-sm font-bold text-black shadow-2xl shadow-black/20 transition-colors hover:bg-slate-100 sm:max-w-sm sm:px-6 sm:text-lg"
                     >
-                        Bắt Đầu Kinh Doanh
-                        <ArrowRight className="w-5 h-5" />
+                        <span className="min-w-0 truncate">Bắt Đầu Kinh Doanh</span>
+                        <ArrowRight className="h-5 w-5 shrink-0" />
                     </button>
 
-                    {/* Login Link */}
-                    <p className="text-slate-400">
+                    <p className="text-sm text-slate-400 sm:text-base">
                         Đã có tài khoản?{' '}
                         <button
                             onClick={() => navigate('/login')}
-                            className="text-white font-bold hover:text-slate-200 transition-colors underline"
+                            className="font-bold text-white underline transition-colors hover:text-slate-200"
                         >
                             Đăng Nhập
                         </button>
                     </p>
                 </div>
 
-                {/* Features */}
-                <div className="grid grid-cols-3 gap-6 text-left mt-16">
-                    <div>
-                        <div className="text-3xl font-bold text-white mb-2">📦</div>
+                <div className="mt-12 grid gap-3 text-left sm:grid-cols-3 sm:gap-4">
+                    <div className="rounded-xl border border-white/10 bg-white/5 p-4">
+                        <Package className="mb-3 h-6 w-6 text-white" />
                         <p className="text-sm text-slate-400">Quản lý sản phẩm</p>
                     </div>
-                    <div>
-                        <div className="text-3xl font-bold text-white mb-2">📊</div>
+                    <div className="rounded-xl border border-white/10 bg-white/5 p-4">
+                        <BarChart3 className="mb-3 h-6 w-6 text-white" />
                         <p className="text-sm text-slate-400">Thống kê chi tiết</p>
                     </div>
-                    <div>
-                        <div className="text-3xl font-bold text-white mb-2">🛒</div>
+                    <div className="rounded-xl border border-white/10 bg-white/5 p-4">
+                        <ShoppingCart className="mb-3 h-6 w-6 text-white" />
                         <p className="text-sm text-slate-400">Quản lý đơn hàng</p>
                     </div>
                 </div>

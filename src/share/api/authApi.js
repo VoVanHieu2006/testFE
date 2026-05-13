@@ -1,5 +1,4 @@
 import { axiosClient } from './axiosClient';
-import { USE_MOCK, mockDelay } from './config';
 
 // Merchant Register
 export const merchantRegister = async (data) => {

@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { Plus, X, Loader2 } from 'lucide-react';
-import { cartesian, computeSkuRows, skuLabel } from '../utils/productHelpers';
+import { computeSkuRows, skuLabel } from '../utils/productHelpers';
 import { useAddProduct } from '../hooks/useProducts';
 import { ImageUploadPreview } from '../components/ImageUploadPreview';
 
@@ -10,7 +10,7 @@ const MAX_ATTR_VALUES = 5;
 
 // ─── BulkPriceRow — set price/image for ALL variants at once ────────────────
 
-function BulkApplyBar({ skuRows, onApply }) {
+function BulkApplyBar({ onApply }) {
     const [bulkPrice, setBulkPrice] = useState('');
     const [bulkImg, setBulkImg] = useState('');
 
@@ -27,25 +27,25 @@ function BulkApplyBar({ skuRows, onApply }) {
             <p className="text-xs font-semibold text-slate-600 uppercase tracking-wider">Apply to all variants</p>
             <div className="flex flex-wrap gap-3">
                 {/* Bulk price */}
-                <div className="flex items-center gap-2 flex-1 min-w-[100px] max-w-[270px]">
+                <div className="flex w-full min-w-0 flex-1 items-center gap-2 sm:min-w-[240px] sm:max-w-[320px]">
                     <input
                         type="number" min="0"
                         value={bulkPrice}
                         onChange={e => setBulkPrice(e.target.value)}
                         placeholder="Price for all (VND)"
-                        className="flex-1 px-3 py-2 rounded-lg border border-[#e3e3e3] text-sm outline-none focus:border-black transition-colors"
+                        className="min-h-11 min-w-0 flex-1 rounded-lg border border-[#e3e3e3] px-3 py-2 text-sm outline-none transition-colors focus:border-black"
                     />
                     <button
                         type="button"
                         onClick={applyPrice}
                         disabled={bulkPrice === ''}
-                        className="px-3 py-2 rounded-lg bg-black text-white text-sm font-medium hover:bg-slate-800 disabled:opacity-40 transition-colors whitespace-nowrap"
+                        className="min-h-11 whitespace-nowrap rounded-lg bg-black px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-slate-800 disabled:opacity-40"
                     >
                         Set price
                     </button>
                 </div>
                 {/* Bulk image */}
-                <div className="flex items-center gap-2 flex-1 min-w-[100px] max-w-[270px]">
+                <div className="flex w-full min-w-0 flex-1 items-center gap-2 sm:min-w-[240px] sm:max-w-[320px]">
                     <ImageUploadPreview 
                         value={bulkImg}
                         onChange={setBulkImg}
@@ -59,7 +59,7 @@ function BulkApplyBar({ skuRows, onApply }) {
                         type="button"
                         onClick={applyImg}
                         disabled={!bulkImg.trim()}
-                        className="px-3 py-2 rounded-lg bg-black text-white text-sm font-medium hover:bg-slate-800 disabled:opacity-40 transition-colors whitespace-nowrap"
+                        className="min-h-11 whitespace-nowrap rounded-lg bg-black px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-slate-800 disabled:opacity-40"
                     >
                         Set image
                     </button>
@@ -72,7 +72,7 @@ function BulkApplyBar({ skuRows, onApply }) {
 // ─── GroupApplyBar — set price/image per attribute group value ───────────────
 // e.g. "Set price for all Color: Red variants"
 
-function GroupApplyBar({ attrGroups, skuRows, onApplyGroup }) {
+function GroupApplyBar({ attrGroups, onApplyGroup }) {
     const [selectedGroup, setSelectedGroup] = useState('');
     const [selectedValue, setSelectedValue] = useState('');
     const [groupPrice, setGroupPrice] = useState('');
@@ -104,11 +104,11 @@ function GroupApplyBar({ attrGroups, skuRows, onApplyGroup }) {
             <p className="text-xs font-semibold text-slate-600 uppercase tracking-wider">Apply by attribute group</p>
 
             {/* Group + Value selectors */}
-            <div className="flex flex-wrap gap-2 items-center">
+            <div className="flex flex-wrap items-center gap-2">
                 <select
                     value={selectedGroup}
                     onChange={e => handleGroupChange(e.target.value)}
-                    className="px-3 py-2 rounded-lg border border-[#e3e3e3] text-sm bg-white outline-none focus:border-black transition-colors"
+                    className="min-h-11 w-full rounded-lg border border-[#e3e3e3] bg-white px-3 py-2 text-sm outline-none transition-colors focus:border-black sm:w-auto"
                 >
                     <option value="">Select attribute...</option>
                     {activeGroups.map(g => (
@@ -119,7 +119,7 @@ function GroupApplyBar({ attrGroups, skuRows, onApplyGroup }) {
                     <select
                         value={selectedValue}
                         onChange={e => setSelectedValue(e.target.value)}
-                        className="px-3 py-2 rounded-lg border border-[#e3e3e3] text-sm bg-white outline-none focus:border-black transition-colors"
+                        className="min-h-11 w-full rounded-lg border border-[#e3e3e3] bg-white px-3 py-2 text-sm outline-none transition-colors focus:border-black sm:w-auto"
                     >
                         <option value="">Select value...</option>
                         {currentGroup.values.map(v => (
@@ -132,24 +132,24 @@ function GroupApplyBar({ attrGroups, skuRows, onApplyGroup }) {
             {/* Price + Image inputs for group */}
             {selectedValue && (
                 <div className="flex flex-wrap gap-3">
-                    <div className="flex items-center gap-2 flex-1 min-w-[100px] max-w-[270px]">
+                    <div className="flex w-full min-w-0 flex-1 items-center gap-2 sm:min-w-[240px] sm:max-w-[320px]">
                         <input
                             type="number" min="0"
                             value={groupPrice}
                             onChange={e => setGroupPrice(e.target.value)}
                             placeholder={`Price for all ${selectedGroup}: ${selectedValue}`}
-                            className="flex-1 px-3 py-2 rounded-lg border border-[#e3e3e3] text-sm outline-none focus:border-black transition-colors"
+                            className="min-h-11 min-w-0 flex-1 rounded-lg border border-[#e3e3e3] px-3 py-2 text-sm outline-none transition-colors focus:border-black"
                         />
                         <button
                             type="button"
                             onClick={applyGroupPrice}
                             disabled={groupPrice === ''}
-                            className="px-3 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 disabled:opacity-40 transition-colors whitespace-nowrap"
+                            className="min-h-11 whitespace-nowrap rounded-lg bg-blue-600 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700 disabled:opacity-40"
                         >
                             Set price
                         </button>
                     </div>
-                    <div className="flex items-center gap-2 flex-1 min-w-[100px] max-w-[270px]">
+                    <div className="flex w-full min-w-0 flex-1 items-center gap-2 sm:min-w-[240px] sm:max-w-[320px]">
                         <div className="flex-1">
                             <ImageUploadPreview 
                                 value={groupImg}
@@ -164,7 +164,7 @@ function GroupApplyBar({ attrGroups, skuRows, onApplyGroup }) {
                             type="button"
                             onClick={applyGroupImg}
                             disabled={!groupImg.trim()}
-                            className="px-3 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 disabled:opacity-40 transition-colors whitespace-nowrap"
+                            className="min-h-11 whitespace-nowrap rounded-lg bg-blue-600 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700 disabled:opacity-40"
                         >
                             Set image
                         </button>
@@ -292,10 +292,10 @@ export function AddProductModal({ tenantId, categories, onClose, onSuccess }) {
     const hasMultipleAttrs = attrGroups.some(g => g.values.length > 0);
 
     return (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[92vh] overflow-y-auto">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-3 sm:p-4">
+            <div className="max-h-[92vh] w-full max-w-3xl overflow-y-auto rounded-2xl bg-white shadow-2xl">
                 {/* Header */}
-                <div className="flex items-center justify-between px-6 py-4 border-b border-[#e3e3e3] sticky top-0 bg-white z-10">
+                <div className="sticky top-0 z-10 flex items-center justify-between border-b border-[#e3e3e3] bg-white px-4 py-4 sm:px-6">
                     <h2 className="text-base font-semibold text-black">Add New Product</h2>
                     <button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-[#f1f2f4] text-slate-500">
                         <X className="w-4 h-4" />
@@ -308,7 +308,7 @@ export function AddProductModal({ tenantId, categories, onClose, onSuccess }) {
                     )}
 
                     {/* ── Section 1: Basic Info ── */}
-                    <div className="p-6 space-y-4">
+                    <div className="space-y-4 p-4 sm:p-6">
                         <h3 className="text-sm font-semibold text-slate-700 flex items-center gap-2">
                             <span className="w-5 h-5 rounded-full bg-black text-white flex items-center justify-center text-[11px] font-bold">1</span>
                             Basic Information
@@ -318,7 +318,7 @@ export function AddProductModal({ tenantId, categories, onClose, onSuccess }) {
                             <label className="block text-sm font-medium text-slate-700 mb-1">Product Name <span className="text-red-500">*</span></label>
                             <input value={name} onChange={e => { setName(e.target.value); setErrors(p => ({ ...p, name: '' })); }}
                                 placeholder="e.g. Classic T-Shirt"
-                                className={`w-full px-3 py-2 rounded-lg border text-sm outline-none transition-colors ${errors.name ? 'border-red-400' : 'border-[#e3e3e3] focus:border-black'}`} />
+                                className={`min-h-11 w-full rounded-lg border px-3 py-2 text-sm outline-none transition-colors ${errors.name ? 'border-red-400' : 'border-[#e3e3e3] focus:border-black'}`} />
                             {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
                         </div>
 
@@ -326,14 +326,14 @@ export function AddProductModal({ tenantId, categories, onClose, onSuccess }) {
                             <label className="block text-sm font-medium text-slate-700 mb-1">Description</label>
                             <textarea value={description} onChange={e => setDescription(e.target.value)} rows={2}
                                 placeholder="Product description..."
-                                className="w-full px-3 py-2 rounded-lg border border-[#e3e3e3] focus:border-black text-sm outline-none resize-none transition-colors" />
+                                className="w-full resize-none rounded-lg border border-[#e3e3e3] px-3 py-2 text-sm outline-none transition-colors focus:border-black" />
                         </div>
 
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid gap-4 sm:grid-cols-2">
                             <div>
                                 <label className="block text-sm font-medium text-slate-700 mb-1">Category <span className="text-red-500">*</span></label>
                                 <select value={categoryId} onChange={e => { setCategoryId(e.target.value); setErrors(p => ({ ...p, categoryId: '' })); }}
-                                    className={`w-full px-3 py-2 rounded-lg border text-sm outline-none bg-white transition-colors ${errors.categoryId ? 'border-red-400' : 'border-[#e3e3e3] focus:border-black'}`}>
+                                    className={`min-h-11 w-full rounded-lg border bg-white px-3 py-2 text-sm outline-none transition-colors ${errors.categoryId ? 'border-red-400' : 'border-[#e3e3e3] focus:border-black'}`}>
                                     <option value="">Select category...</option>
                                     {categories.map(cat => (
                                         <option key={cat.categoryId || cat.id} value={cat.categoryId || cat.id}>{cat.name}</option>
@@ -363,7 +363,7 @@ export function AddProductModal({ tenantId, categories, onClose, onSuccess }) {
                     </div>
 
                     {/* ── Section 2: Attributes ── */}
-                    <div className="p-6 space-y-4">
+                    <div className="space-y-4 p-4 sm:p-6">
                         <h3 className="text-sm font-semibold text-slate-700 flex items-center gap-2">
                             <span className="w-5 h-5 rounded-full bg-black text-white flex items-center justify-center text-[11px] font-bold">2</span>
                             Product Attributes
@@ -412,14 +412,14 @@ export function AddProductModal({ tenantId, categories, onClose, onSuccess }) {
                         ))}
 
                         {attrGroups.length < MAX_ATTR_GROUPS ? (
-                            <div className="flex items-center gap-2">
+                            <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
                                 <input value={newAttrKey}
                                     onChange={e => setNewAttrKey(e.target.value)}
                                     onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addAttrGroup(); } }}
                                     placeholder='Attribute name (e.g. Color, Size, Style...)'
-                                    className="flex-1 px-3 py-2 rounded-lg border border-dashed border-slate-300 text-sm outline-none focus:border-black transition-colors" />
+                                    className="min-h-11 min-w-0 flex-1 rounded-lg border border-dashed border-slate-300 px-3 py-2 text-sm outline-none transition-colors focus:border-black" />
                                 <button type="button" onClick={addAttrGroup} disabled={!newAttrKey.trim()}
-                                    className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-sm font-medium text-slate-700 disabled:opacity-40 transition-colors">
+                                    className="flex min-h-11 w-full items-center justify-center gap-1.5 rounded-lg bg-slate-100 px-3 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-200 disabled:opacity-40 sm:w-auto">
                                     <Plus className="w-4 h-4" /> Add Attribute
                                 </button>
                             </div>
@@ -429,7 +429,7 @@ export function AddProductModal({ tenantId, categories, onClose, onSuccess }) {
                     </div>
 
                     {/* ── Section 3: Variants & Pricing ── */}
-                    <div className="p-6 space-y-4">
+                    <div className="space-y-4 p-4 sm:p-6">
                         <h3 className="text-sm font-semibold text-slate-700 flex items-center gap-2">
                             <span className="w-5 h-5 rounded-full bg-black text-white flex items-center justify-center text-[11px] font-bold">3</span>
                             Variants &amp; Pricing
@@ -438,14 +438,13 @@ export function AddProductModal({ tenantId, categories, onClose, onSuccess }) {
 
                         {/* ── Bulk apply (all variants) ── */}
                         {skuRows.length > 1 && (
-                            <BulkApplyBar skuRows={skuRows} onApply={bulkApply} />
+                            <BulkApplyBar onApply={bulkApply} />
                         )}
 
                         {/* ── Group apply (by attribute value) ── */}
                         {skuRows.length > 1 && hasMultipleAttrs && (
                             <GroupApplyBar
                                 attrGroups={attrGroups}
-                                skuRows={skuRows}
                                 onApplyGroup={groupApply}
                             />
                         )}
@@ -453,8 +452,8 @@ export function AddProductModal({ tenantId, categories, onClose, onSuccess }) {
                         {errors.skus && <p className="text-red-500 text-xs">{errors.skus}</p>}
 
                         {/* ── Per-variant table ── */}
-                        <div className="border border-[#e3e3e3] rounded-xl overflow-hidden">
-                            <table className="w-full text-sm">
+                        <div className="overflow-x-auto rounded-xl border border-[#e3e3e3]">
+                            <table className="w-full min-w-[720px] text-sm">
                                 <thead>
                                     <tr className="bg-[#f8f8f8] border-b border-[#e3e3e3]">
                                         <th className="text-left px-4 py-2.5 text-xs font-semibold text-slate-600 w-36">Variant</th>
@@ -502,13 +501,13 @@ export function AddProductModal({ tenantId, categories, onClose, onSuccess }) {
                     </div>
 
                     {/* Bottom buttons */}
-                    <div className="px-6 py-4 flex gap-3">
+                    <div className="flex flex-col-reverse gap-3 px-4 py-4 sm:flex-row sm:px-6">
                         <button type="button" onClick={onClose}
-                            className="flex-1 px-4 py-2 rounded-lg border border-[#e3e3e3] text-sm font-medium text-slate-700 hover:bg-[#f8f8f8] transition-colors">
+                            className="min-h-11 flex-1 rounded-lg border border-[#e3e3e3] px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-[#f8f8f8]">
                             Cancel
                         </button>
                         <button type="submit" disabled={isLoading}
-                            className="flex-1 px-4 py-2 rounded-lg bg-black text-white text-sm font-medium hover:bg-slate-800 disabled:opacity-60 flex items-center justify-center gap-2 transition-colors">
+                            className="flex min-h-11 flex-1 items-center justify-center gap-2 rounded-lg bg-black px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-slate-800 disabled:opacity-60">
                             {isLoading && <Loader2 className="w-4 h-4 animate-spin" />}
                             {isLoading ? 'Creating...' : 'Create Product'}
                         </button>

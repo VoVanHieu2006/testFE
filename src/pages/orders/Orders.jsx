@@ -73,7 +73,7 @@ function OrderDetailModal({ tenantId, orderId, customerMap, onClose }) {
             setUpdatingStatus(false);
         }
     };
-
+    
     const fmt = (val) => val != null
         ? new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(val)
         : '—';
@@ -82,15 +82,15 @@ function OrderDetailModal({ tenantId, orderId, customerMap, onClose }) {
     const customerEmail = order ? (customerMap[order.customerId] || null) : null;
 
     return (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-                <div className="flex items-center justify-between px-6 py-4 border-b border-[#e3e3e3] sticky top-0 bg-white z-10">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-3 sm:p-4">
+            <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl bg-white shadow-2xl">
+                <div className="sticky top-0 z-10 flex items-center justify-between border-b border-[#e3e3e3] bg-white px-4 py-4 sm:px-6">
                     <h2 className="text-base font-semibold text-black">Order Details</h2>
                     <button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-[#f1f2f4] text-slate-500">
                         <X className="w-4 h-4" />
                     </button>
                 </div>
-                <div className="p-6">
+                <div className="p-4 sm:p-6">
                     {isLoading ? (
                         <div className="flex items-center justify-center py-12">
                             <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
@@ -103,7 +103,7 @@ function OrderDetailModal({ tenantId, orderId, customerMap, onClose }) {
                         </div>
                     ) : order ? (
                         <div className="space-y-6">
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid gap-4 sm:grid-cols-2">
                                 <div>
                                     <p className="text-xs text-slate-500 mb-0.5">Order ID</p>
                                     <p className="text-sm font-mono font-medium text-slate-900">{order.orderId || order.id}</p>
@@ -148,8 +148,8 @@ function OrderDetailModal({ tenantId, orderId, customerMap, onClose }) {
                             {Array.isArray(order.orderItems) && order.orderItems.length > 0 && (
                                 <div>
                                     <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Items</p>
-                                    <div className="border border-[#e3e3e3] rounded-lg overflow-hidden">
-                                        <table className="w-full text-sm">
+                                    <div className="overflow-x-auto rounded-lg border border-[#e3e3e3]">
+                                        <table className="w-full min-w-[520px] text-sm">
                                             <thead>
                                                 <tr className="bg-[#f8f8f8] border-b border-[#e3e3e3]">
                                                     <th className="text-left px-3 py-2 text-xs font-semibold text-slate-600">SKU ID</th>
@@ -178,11 +178,11 @@ function OrderDetailModal({ tenantId, orderId, customerMap, onClose }) {
                                 {serverError && (
                                     <div className="mb-2 bg-red-50 border border-red-200 text-red-700 text-xs px-3 py-2 rounded-lg">{serverError}</div>
                                 )}
-                                <div className="flex items-center gap-3">
+                                <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
                                     <select
                                         value={selectedStatus || order.status || ''}
                                         onChange={(e) => setSelectedStatus(e.target.value)}
-                                        className="flex-1 px-3 py-2 rounded-lg border border-[#e3e3e3] text-sm bg-white text-slate-700 outline-none focus:border-black"
+                                        className="min-h-11 w-full flex-1 rounded-lg border border-[#e3e3e3] bg-white px-3 py-2 text-sm text-slate-700 outline-none focus:border-black"
                                     >
                                         <option value="">Select new status</option>
                                         {ORDER_STATUSES.map((s) => (
@@ -192,7 +192,7 @@ function OrderDetailModal({ tenantId, orderId, customerMap, onClose }) {
                                     <button
                                         onClick={handleStatusUpdate}
                                         disabled={updatingStatus || !selectedStatus || selectedStatus === order.status}
-                                        className="px-4 py-2 rounded-lg bg-black text-white text-sm font-medium hover:bg-slate-800 disabled:opacity-50 transition-colors flex items-center gap-2"
+                                        className="flex min-h-11 w-full items-center justify-center gap-2 rounded-lg bg-black px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-slate-800 disabled:opacity-50 sm:w-auto"
                                     >
                                         {updatingStatus && <Loader2 className="w-4 h-4 animate-spin" />}
                                         Update
@@ -301,7 +301,7 @@ export default function Orders() {
 
     if (!tenantId) {
         return (
-            <div className="p-8 flex items-center gap-3 text-slate-500">
+            <div className="flex items-center gap-3 p-4 text-slate-500 sm:p-8">
                 <AlertCircle className="w-5 h-5" />
                 <span>Please select a store to view orders.</span>
             </div>
@@ -309,10 +309,10 @@ export default function Orders() {
     }
 
     return (
-        <div className="p-6 space-y-6">
-            <div className="flex items-center justify-between">
-                <div>
-                    <h1 className="text-xl font-bold text-slate-900">Orders</h1>
+        <div className="space-y-5 p-4 sm:space-y-6 sm:p-6">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div className="min-w-0">
+                    <h1 className="text-xl font-bold text-slate-900 sm:text-2xl">Orders</h1>
                     <p className="text-sm text-slate-500 mt-0.5">View and manage customer orders</p>
                 </div>
                 <div className="flex items-center gap-2 text-sm text-slate-500">
@@ -322,17 +322,17 @@ export default function Orders() {
             </div>
 
             {/* Filters */}
-            <div className="bg-white rounded-xl border border-[#e3e3e3] p-4 space-y-3">
+            <div className="space-y-3 rounded-xl border border-[#e3e3e3] bg-white p-3 shadow-sm sm:p-4">
                 {/* Row 1: Search + Status + Customer */}
                 <div className="flex flex-wrap gap-3 items-center">
-                    <form onSubmit={handleSearch} className="flex items-center gap-2 bg-[#f8f8f8] rounded-lg px-3 py-2 border border-transparent focus-within:border-[#e3e3e3] flex-1 min-w-[200px]">
+                    <form onSubmit={handleSearch} className="flex min-h-11 w-full min-w-0 flex-1 items-center gap-2 rounded-lg border border-transparent bg-[#f8f8f8] px-3 py-2 focus-within:border-[#e3e3e3] sm:min-w-[260px]">
                         <Search className="w-4 h-4 text-slate-400 shrink-0" />
                         <input
                             type="text"
                             placeholder="Search by order ID, address, customer ID..."
                             value={searchInput}
                             onChange={(e) => setSearchInput(e.target.value)}
-                            className="flex-1 bg-transparent text-sm outline-none placeholder:text-slate-400"
+                            className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-slate-400"
                         />
                         {searchInput && (
                             <button type="button" onClick={() => { setSearchInput(''); setSearch(''); setPage(1); }}>
@@ -343,7 +343,7 @@ export default function Orders() {
                     <select
                         value={statusFilter}
                         onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
-                        className="px-3 py-2 rounded-lg border border-[#e3e3e3] text-sm bg-white text-slate-700 outline-none focus:border-black"
+                        className="min-h-11 w-full rounded-lg border border-[#e3e3e3] bg-white px-3 py-2 text-sm text-slate-700 outline-none focus:border-black sm:w-auto"
                     >
                         <option value="">All Statuses</option>
                         {ORDER_STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
@@ -351,7 +351,7 @@ export default function Orders() {
                     <select
                         value={customerIdFilter}
                         onChange={(e) => { setCustomerIdFilter(e.target.value); setPage(1); }}
-                        className="px-3 py-2 rounded-lg border border-[#e3e3e3] text-sm bg-white text-slate-700 outline-none focus:border-black min-w-[160px]"
+                        className="min-h-11 w-full rounded-lg border border-[#e3e3e3] bg-white px-3 py-2 text-sm text-slate-700 outline-none focus:border-black sm:w-auto sm:min-w-[160px]"
                     >
                         <option value="">All Customers</option>
                         {customerOptions.map((c) => (
@@ -361,7 +361,7 @@ export default function Orders() {
                     <button
                         type="button"
                         onClick={() => setShowAdvanced((v) => !v)}
-                        className={`flex items-center gap-1.5 px-3 py-2 rounded-lg border text-sm font-medium transition-colors ${showAdvanced ? 'border-slate-900 bg-slate-900 text-white' : 'border-[#e3e3e3] text-slate-600 hover:bg-[#f8f8f8]'}`}
+                        className={`flex min-h-11 w-full items-center justify-center gap-1.5 rounded-lg border px-3 py-2 text-sm font-medium transition-colors sm:w-auto ${showAdvanced ? 'border-slate-900 bg-slate-900 text-white' : 'border-[#e3e3e3] text-slate-600 hover:bg-[#f8f8f8]'}`}
                     >
                         <SlidersHorizontal className="w-4 h-4" />
                         Filters
@@ -370,32 +370,32 @@ export default function Orders() {
 
                 {/* Row 2: Advanced filters */}
                 {showAdvanced && (
-                    <div className="flex flex-wrap gap-3 items-end pt-2 border-t border-[#f0f0f0]">
-                        <div className="flex flex-col gap-1 min-w-[140px]">
+                    <div className="grid gap-3 border-t border-[#f0f0f0] pt-3 sm:grid-cols-2 lg:flex lg:flex-wrap lg:items-end">
+                        <div className="flex min-w-0 flex-col gap-1 lg:min-w-[140px]">
                             <label className="text-xs font-medium text-slate-500">Payment Method</label>
                             <select
                                 value={paymentMethod}
                                 
                                 onChange={(e) => { 
                                    setPaymentMethod(e.target.value); setPage(1); }}
-                                className="px-3 py-2 rounded-lg border border-[#e3e3e3] text-sm bg-white text-slate-700 outline-none focus:border-black"
+                                className="min-h-11 rounded-lg border border-[#e3e3e3] bg-white px-3 py-2 text-sm text-slate-700 outline-none focus:border-black"
                             >
                                 <option value="">Any</option>
                                 {PAYMENT_METHODS.map((m) => <option key={m} value={m}>{m}</option>)}
                             </select>
                         </div>
-                        <div className="flex flex-col gap-1 min-w-[140px]">
+                        <div className="flex min-w-0 flex-col gap-1 lg:min-w-[140px]">
                             <label className="text-xs font-medium text-slate-500">Payment Status</label>
                             <select
                                 value={paymentStatus}
                                 onChange={(e) => { setPaymentStatus(e.target.value); setPage(1); }}
-                                className="px-3 py-2 rounded-lg border border-[#e3e3e3] text-sm bg-white text-slate-700 outline-none focus:border-black"
+                                className="min-h-11 rounded-lg border border-[#e3e3e3] bg-white px-3 py-2 text-sm text-slate-700 outline-none focus:border-black"
                             >
                                 <option value="">Any</option>
                                 {PAYMENT_STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
                             </select>
                         </div>
-                        <div className="flex flex-col gap-1">
+                        <div className="flex min-w-0 flex-col gap-1">
                             <label className="text-xs font-medium text-slate-500">Total from (VND)</label>
                             <input
                                 type="number"
@@ -403,10 +403,10 @@ export default function Orders() {
                                 placeholder="0"
                                 value={totalFrom}
                                 onChange={(e) => { setTotalFrom(e.target.value); setPage(1); }}
-                                className="w-32 px-3 py-2 rounded-lg border border-[#e3e3e3] text-sm outline-none focus:border-black"
+                                className="min-h-11 w-full rounded-lg border border-[#e3e3e3] px-3 py-2 text-sm outline-none focus:border-black lg:w-32"
                             />
                         </div>
-                        <div className="flex flex-col gap-1">
+                        <div className="flex min-w-0 flex-col gap-1">
                             <label className="text-xs font-medium text-slate-500">Total to (VND)</label>
                             <input
                                 type="number"
@@ -414,33 +414,33 @@ export default function Orders() {
                                 placeholder="∞"
                                 value={totalTo}
                                 onChange={(e) => { setTotalTo(e.target.value); setPage(1); }}
-                                className="w-32 px-3 py-2 rounded-lg border border-[#e3e3e3] text-sm outline-none focus:border-black"
+                                className="min-h-11 w-full rounded-lg border border-[#e3e3e3] px-3 py-2 text-sm outline-none focus:border-black lg:w-32"
                             />
                         </div>
-                        <div className="flex flex-col gap-1">
+                        <div className="flex min-w-0 flex-col gap-1">
                             <label className="text-xs font-medium text-slate-500">Created from</label>
                             <input
                                 type="date"
                                 value={createdFrom}
                                 onChange={(e) => { setCreatedFrom(e.target.value); setPage(1); }}
-                                className="px-3 py-2 rounded-lg border border-[#e3e3e3] text-sm outline-none focus:border-black"
+                                className="min-h-11 rounded-lg border border-[#e3e3e3] px-3 py-2 text-sm outline-none focus:border-black"
                             />
                         </div>
-                        <div className="flex flex-col gap-1">
+                        <div className="flex min-w-0 flex-col gap-1">
                             <label className="text-xs font-medium text-slate-500">Created to</label>
                             <input
                                 type="date"
                                 value={createdTo}
                                 onChange={(e) => { setCreatedTo(e.target.value); setPage(1); }}
-                                className="px-3 py-2 rounded-lg border border-[#e3e3e3] text-sm outline-none focus:border-black"
+                                className="min-h-11 rounded-lg border border-[#e3e3e3] px-3 py-2 text-sm outline-none focus:border-black"
                             />
                         </div>
-                        <div className="flex flex-col gap-1 min-w-[160px]">
+                        <div className="flex min-w-0 flex-col gap-1 lg:min-w-[160px]">
                             <label className="text-xs font-medium text-slate-500">Sort by</label>
                             <select
                                 value={sortBy}
                                 onChange={(e) => { setSortBy(e.target.value); setPage(1); }}
-                                className="px-3 py-2 rounded-lg border border-[#e3e3e3] text-sm bg-white text-slate-700 outline-none focus:border-black"
+                                className="min-h-11 rounded-lg border border-[#e3e3e3] bg-white px-3 py-2 text-sm text-slate-700 outline-none focus:border-black"
                             >
                                 {SORT_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
                             </select>
@@ -448,7 +448,7 @@ export default function Orders() {
                         <button
                             type="button"
                             onClick={handleReset}
-                            className="px-3 py-2 rounded-lg border border-[#e3e3e3] text-sm text-slate-600 hover:bg-[#f8f8f8] transition-colors"
+                            className="min-h-11 rounded-lg border border-[#e3e3e3] px-3 py-2 text-sm text-slate-600 transition-colors hover:bg-[#f8f8f8]"
                         >
                             Reset all
                         </button>
@@ -457,7 +457,7 @@ export default function Orders() {
             </div>
 
             {/* Table */}
-            <div className="bg-white rounded-xl border border-[#e3e3e3] overflow-hidden">
+            <div className="overflow-hidden rounded-xl border border-[#e3e3e3] bg-white shadow-sm">
                 {ordersQuery.isLoading ? (
                     <div className="flex items-center justify-center py-20">
                         <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
@@ -471,7 +471,7 @@ export default function Orders() {
                 ) : (
                     <>
                         <div className="overflow-x-auto">
-                            <table className="w-full text-sm">
+                            <table className="w-full min-w-[820px] text-sm">
                                 <thead>
                                     <tr className="border-b border-[#e3e3e3] bg-[#f8f8f8]">
                                         <th className="text-left px-4 py-3 font-semibold text-slate-600">Order ID</th>
@@ -540,18 +540,18 @@ export default function Orders() {
                         </div>
 
                         {total > DEFAULT_PAGE_SIZE && (
-                            <div className="flex items-center justify-between px-4 py-3 border-t border-[#e3e3e3]">
+                            <div className="flex flex-col gap-3 border-t border-[#e3e3e3] px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
                                 <span className="text-sm text-slate-500">
                                     Page {page} of {totalPages}
                                 </span>
-                                <div className="flex items-center gap-1">
+                                <div className="flex items-center justify-between gap-1 sm:justify-end">
                                     <button onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page === 1}
-                                        className="w-8 h-8 flex items-center justify-center rounded-lg border border-[#e3e3e3] disabled:opacity-40 hover:bg-[#f8f8f8] transition-colors">
+                                        className="w-9 h-9 flex items-center justify-center rounded-lg border border-[#e3e3e3] disabled:opacity-40 hover:bg-[#f8f8f8] transition-colors">
                                         <ChevronLeft className="w-4 h-4" />
                                     </button>
                                     <span className="px-3 text-sm font-medium text-slate-700">{page} / {totalPages}</span>
                                     <button onClick={() => setPage((p) => Math.min(totalPages, p + 1))} disabled={page >= totalPages}
-                                        className="w-8 h-8 flex items-center justify-center rounded-lg border border-[#e3e3e3] disabled:opacity-40 hover:bg-[#f8f8f8] transition-colors">
+                                        className="w-9 h-9 flex items-center justify-center rounded-lg border border-[#e3e3e3] disabled:opacity-40 hover:bg-[#f8f8f8] transition-colors">
                                         <ChevronRight className="w-4 h-4" />
                                     </button>
                                 </div>

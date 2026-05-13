@@ -13,7 +13,7 @@ export default function Products() {
         products, total, isLastPage, totalPages, categories,
         isLoading, isError,
         // filter state
-        page, pageSize, search, searchInput, categoryId, sortBy, sortDir, expandedIds,
+        page, pageSize, searchInput, categoryId, sortBy, sortDir, expandedIds,
         // filter setters
         setSearchInput, setCategoryId, setSortBy, setSortDir,
         // handlers
@@ -27,7 +27,7 @@ export default function Products() {
 
     if (!tenantId) {
         return (
-            <div className="p-8 flex items-center gap-3 text-slate-500">
+            <div className="flex items-center gap-3 p-4 text-slate-500 sm:p-8">
                 <AlertCircle className="w-5 h-5" />
                 <span>Please select a store to view products.</span>
             </div>
@@ -35,16 +35,16 @@ export default function Products() {
     }
 
     return (
-        <div className="p-6 space-y-6">
+        <div className="space-y-5 p-4 sm:space-y-6 sm:p-6">
             {/* Header */}
-            <div className="flex items-center justify-between">
-                <div>
-                    <h1 className="text-xl font-bold text-slate-900">Products</h1>
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div className="min-w-0">
+                    <h1 className="text-xl font-bold text-slate-900 sm:text-2xl">Products</h1>
                     <p className="text-sm text-slate-500 mt-0.5">Manage your store&apos;s products and variants</p>
                 </div>
                 <button
                     onClick={() => setModal('add')}
-                    className="flex items-center gap-2 px-4 py-2 bg-black text-white rounded-lg text-sm font-medium hover:bg-slate-800 transition-colors"
+                    className="flex min-h-11 w-full items-center justify-center gap-2 rounded-lg bg-black px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-slate-800 sm:w-auto"
                 >
                     <Plus className="w-4 h-4" /> Add Product
                 </button>

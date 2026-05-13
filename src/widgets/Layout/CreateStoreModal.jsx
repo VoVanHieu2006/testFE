@@ -55,9 +55,9 @@ export default function CreateStoreModal({ onClose }) {
     };
 
     return (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md">
-                <div className="flex items-center justify-between px-6 py-4 border-b border-[#e3e3e3]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-3 sm:p-4">
+            <div className="max-h-[92vh] w-full max-w-md overflow-y-auto rounded-2xl bg-white shadow-2xl">
+                <div className="flex items-center justify-between border-b border-[#e3e3e3] px-4 py-4 sm:px-6">
                     <div className="flex items-center gap-2">
                         <Plus className="w-5 h-5 text-black" />
                         <h2 className="text-base font-semibold text-black">Create New Store</h2>
@@ -67,7 +67,7 @@ export default function CreateStoreModal({ onClose }) {
                     </button>
                 </div>
 
-                <form onSubmit={handleSubmit} className="p-6 space-y-4">
+                <form onSubmit={handleSubmit} className="space-y-4 p-4 sm:p-6">
                     {serverError && (
                         <div className="bg-red-50 border border-red-200 text-red-700 text-sm px-3 py-2 rounded-lg">
                             {serverError}
@@ -84,7 +84,7 @@ export default function CreateStoreModal({ onClose }) {
                             value={form.subdomain}
                             onChange={handleChange}
                             placeholder="my-store"
-                            className={`w-full px-3 py-2 rounded-lg border text-sm outline-none transition-colors ${
+                            className={`min-h-11 w-full rounded-lg border px-3 py-2 text-sm outline-none transition-colors ${
                                 errors.subdomain
                                     ? 'border-red-400 focus:border-red-500'
                                     : 'border-[#e3e3e3] focus:border-black'
@@ -106,7 +106,7 @@ export default function CreateStoreModal({ onClose }) {
                             value={form.storeName}
                             onChange={handleChange}
                             placeholder="My Awesome Store"
-                            className={`w-full px-3 py-2 rounded-lg border text-sm outline-none transition-colors ${
+                            className={`min-h-11 w-full rounded-lg border px-3 py-2 text-sm outline-none transition-colors ${
                                 errors.storeName
                                     ? 'border-red-400 focus:border-red-500'
                                     : 'border-[#e3e3e3] focus:border-black'
@@ -124,25 +124,25 @@ export default function CreateStoreModal({ onClose }) {
                             name="isActive"
                             checked={form.isActive}
                             onChange={handleChange}
-                            className="w-4 h-4 accent-black"
+                            className="h-5 w-5 accent-black"
                         />
                         <label htmlFor="isActive" className="text-sm font-medium text-slate-700">
                             Active store
                         </label>
                     </div>
 
-                    <div className="flex gap-3 pt-2">
+                    <div className="flex flex-col-reverse gap-3 pt-2 sm:flex-row">
                         <button
                             type="button"
                             onClick={onClose}
-                            className="flex-1 px-4 py-2 rounded-lg border border-[#e3e3e3] text-sm font-medium text-slate-700 hover:bg-[#f8f8f8] transition-colors"
+                            className="min-h-11 flex-1 rounded-lg border border-[#e3e3e3] px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-[#f8f8f8]"
                         >
                             Cancel
                         </button>
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className="flex-1 px-4 py-2 rounded-lg bg-black text-white text-sm font-medium hover:bg-slate-800 transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
+                            className="flex min-h-11 flex-1 items-center justify-center gap-2 rounded-lg bg-black px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-slate-800 disabled:opacity-60"
                         >
                             {isLoading && <Loader2 className="w-4 h-4 animate-spin" />}
                             {isLoading ? 'Creating...' : 'Create Store'}

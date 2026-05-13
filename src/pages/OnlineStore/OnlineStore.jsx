@@ -19,7 +19,7 @@ import { getTenantBySubdomain, patchTenantTheme, patchTenantContent } from '../.
 function AccordionSection({ title, isOpen, onToggle, children }) {
     return (
         <section className="rounded-xl border border-slate-200 bg-white">
-            <button type="button" onClick={onToggle} className="flex w-full items-center justify-between px-4 py-3 text-left">
+            <button type="button" onClick={onToggle} className="flex min-h-11 w-full items-center justify-between px-4 py-3 text-left">
                 <span className="text-xs font-semibold uppercase tracking-wider text-slate-700">{title}</span>
                 {isOpen ? <ChevronUp className="h-4 w-4 text-slate-500" /> : <ChevronDown className="h-4 w-4 text-slate-500" />}
             </button>
@@ -37,13 +37,13 @@ function ColorField({ label, value, onChange }) {
                     type="color"
                     value={value}
                     onChange={(e) => onChange(e.target.value)}
-                    className="h-10 w-12 rounded border border-slate-300 bg-white p-1"
+                    className="h-11 w-12 rounded border border-slate-300 bg-white p-1"
                 />
                 <input
                     type="text"
                     value={value}
                     onChange={(e) => onChange(e.target.value)}
-                    className="h-10 flex-1 rounded border border-slate-300 px-3 text-sm uppercase outline-none focus:border-slate-600"
+                    className="h-11 min-w-0 flex-1 rounded border border-slate-300 px-3 text-sm uppercase outline-none focus:border-slate-600"
                 />
             </div>
         </label>
@@ -213,8 +213,8 @@ export default function OnlineStore() {
     ], []);
 
     return (
-        <div className="flex h-[calc(100vh-4rem)] w-full bg-slate-100">
-            <aside className="w-[360px] shrink-0 border-r border-slate-200 bg-slate-50 p-4 overflow-y-auto">
+        <div className="flex min-h-[calc(100vh-4rem)] w-full flex-col bg-slate-100 xl:h-[calc(100vh-4rem)] xl:flex-row">
+            <aside className="max-h-none w-full shrink-0 border-b border-slate-200 bg-slate-50 p-4 xl:h-full xl:w-[360px] xl:overflow-y-auto xl:border-b-0 xl:border-r">
                 {/* Header card */}
                 <div className="mb-4 rounded-xl border border-slate-200 bg-white p-3">
                     <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">Theme & Content Editor</p>
@@ -225,12 +225,12 @@ export default function OnlineStore() {
                             'Select a store to load and save settings.'
                         )}
                     </p>
-                    <div className="mt-3 flex items-center gap-2">
+                    <div className="mt-3 flex flex-wrap items-center gap-2">
                         <button
                             type="button"
                             onClick={handleSaveChanges}
                             disabled={!isDirty || isSaving || isLoadingData}
-                            className="flex items-center gap-1.5 rounded-md bg-slate-900 px-3 py-1.5 text-xs font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50"
+                            className="flex min-h-10 items-center gap-1.5 rounded-md bg-slate-900 px-3 py-1.5 text-xs font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50"
                         >
                             {isSaving && <Loader2 className="h-3 w-3 animate-spin" />}
                             Save changes
@@ -269,7 +269,7 @@ export default function OnlineStore() {
                             <select
                                 value={theme.typography.fontFamily}
                                 onChange={(e) => setTheme((p) => ({ ...p, typography: { ...p.typography, fontFamily: e.target.value } }))}
-                                className="h-10 w-full rounded border border-slate-300 bg-white px-3 text-sm outline-none focus:border-slate-600"
+                                className="h-11 w-full rounded border border-slate-300 bg-white px-3 text-sm outline-none focus:border-slate-600"
                             >
                                 {FONT_OPTIONS.map((font) => <option key={font} value={font}>{font}</option>)}
                             </select>
@@ -282,7 +282,7 @@ export default function OnlineStore() {
                                 max={40}
                                 value={theme.layout.borderRadius}
                                 onChange={(e) => setTheme((p) => ({ ...p, layout: { ...p.layout, borderRadius: Number(e.target.value) || 0 } }))}
-                                className="h-10 w-full rounded border border-slate-300 bg-white px-3 text-sm outline-none focus:border-slate-600"
+                                className="h-11 w-full rounded border border-slate-300 bg-white px-3 text-sm outline-none focus:border-slate-600"
                             />
                         </label>
                     </AccordionSection>
@@ -319,7 +319,7 @@ export default function OnlineStore() {
                                 type="url"
                                 value={pageData.home.heroImageUrl}
                                 onChange={(e) => setPageData((p) => ({ ...p, home: { ...p.home, heroImageUrl: e.target.value } }))}
-                                className="h-10 w-full rounded border border-slate-300 px-3 text-sm outline-none focus:border-slate-600"
+                                className="h-11 w-full rounded border border-slate-300 px-3 text-sm outline-none focus:border-slate-600"
                             />
                         </label>
                         <label className="block space-y-2">
@@ -328,7 +328,7 @@ export default function OnlineStore() {
                                 type="text"
                                 value={pageData.home.title}
                                 onChange={(e) => setPageData((p) => ({ ...p, home: { ...p.home, title: e.target.value } }))}
-                                className="h-10 w-full rounded border border-slate-300 px-3 text-sm outline-none focus:border-slate-600"
+                                className="h-11 w-full rounded border border-slate-300 px-3 text-sm outline-none focus:border-slate-600"
                             />
                         </label>
                         <label className="block space-y-2">
@@ -365,7 +365,7 @@ export default function OnlineStore() {
                                 type="text"
                                 value={pageData.home.featuredTitle}
                                 onChange={(e) => setPageData((p) => ({ ...p, home: { ...p.home, featuredTitle: e.target.value } }))}
-                                className="h-10 w-full rounded border border-slate-300 px-3 text-sm outline-none focus:border-slate-600"
+                                className="h-11 w-full rounded border border-slate-300 px-3 text-sm outline-none focus:border-slate-600"
                             />
                         </label>
                         <label className="block space-y-2">
@@ -395,15 +395,15 @@ export default function OnlineStore() {
                 </div>
             </aside>
 
-            <section className="flex-1 min-w-0 flex flex-col">
-                <div className="border-b border-slate-200 bg-white px-5 py-3">
-                    <div className="inline-flex rounded-lg bg-slate-100 p-1">
+            <section className="flex min-h-[560px] min-w-0 flex-1 flex-col xl:min-h-0">
+                <div className="border-b border-slate-200 bg-white px-3 py-3 sm:px-5">
+                    <div className="flex max-w-full gap-1 overflow-x-auto rounded-lg bg-slate-100 p-1">
                         {previewPageButtons.map((page) => (
                             <button
                                 key={page.value}
                                 type="button"
                                 onClick={() => handleChangePreviewPage(page.value)}
-                                className={`rounded-md px-3 py-1.5 text-sm transition ${currentView === page.value ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600'}`}
+                                className={`min-h-9 shrink-0 rounded-md px-3 py-1.5 text-sm transition ${currentView === page.value ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600'}`}
                             >
                                 {page.label}
                             </button>
@@ -425,5 +425,3 @@ export default function OnlineStore() {
 }
 
 const FONT_OPTIONS = ['Inter', 'Poppins', 'Montserrat', 'Merriweather', 'Lato'];
-
-

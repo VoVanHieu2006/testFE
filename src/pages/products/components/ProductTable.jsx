@@ -11,7 +11,7 @@ export function ProductTable({
     onEdit, onDelete,
 }) {
     return (
-        <div className="bg-white rounded-xl border border-[#e3e3e3] overflow-hidden">
+        <div className="overflow-hidden rounded-xl border border-[#e3e3e3] bg-white shadow-sm">
             {isLoading ? (
                 <div className="flex items-center justify-center py-20">
                     <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
@@ -25,7 +25,7 @@ export function ProductTable({
             ) : (
                 <>
                     <div className="overflow-x-auto">
-                        <table className="w-full text-sm">
+                        <table className="w-full min-w-[760px] text-sm">
                             <thead>
                                 <tr className="border-b border-[#e3e3e3] bg-[#f8f8f8]">
                                     <th className="w-10 px-2 py-3"></th>
@@ -142,7 +142,8 @@ export function ProductTable({
                                                                 <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
                                                                     Variants of &ldquo;{product.name}&rdquo;
                                                                 </p>
-                                                                <table className="w-full text-xs">
+                                                                <div className="overflow-x-auto">
+                                                                <table className="w-full min-w-[520px] text-xs">
                                                                     <thead>
                                                                         <tr className="border-b border-[#e3e3e3]">
                                                                             <th className="text-left pb-1.5 font-semibold text-slate-500 w-48">Combination</th>
@@ -178,6 +179,7 @@ export function ProductTable({
                                                                         })}
                                                                     </tbody>
                                                                 </table>
+                                                                </div>
                                                             </div>
                                                         </td>
                                                     </tr>
@@ -192,18 +194,18 @@ export function ProductTable({
 
                     {/* Pagination */}
                     {(page > 1 || !isLastPage) && (
-                        <div className="flex items-center justify-between px-4 py-3 border-t border-[#e3e3e3]">
+                        <div className="flex flex-col gap-3 border-t border-[#e3e3e3] px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
                             <span className="text-sm text-slate-500">
                                 {total > 0
                                     ? `Showing ${(page - 1) * pageSize + 1}–${Math.min(page * pageSize, total)} of ${total} products`
                                     : `Page ${page} · ${products.length} product${products.length !== 1 ? 's' : ''}`
                                 }
                             </span>
-                            <div className="flex items-center gap-1">
+                            <div className="flex items-center justify-between gap-1 sm:justify-end">
                                 <button
                                     onClick={() => handlePageChange(Math.max(1, page - 1))}
                                     disabled={page === 1}
-                                    className="w-8 h-8 flex items-center justify-center rounded-lg border border-[#e3e3e3] disabled:opacity-40 hover:bg-[#f8f8f8] transition-colors"
+                                    className="w-9 h-9 flex items-center justify-center rounded-lg border border-[#e3e3e3] disabled:opacity-40 hover:bg-[#f8f8f8] transition-colors"
                                 >
                                     <ChevronLeft className="w-4 h-4" />
                                 </button>
@@ -213,7 +215,7 @@ export function ProductTable({
                                 <button
                                     onClick={() => handlePageChange(page + 1)}
                                     disabled={isLastPage}
-                                    className="w-8 h-8 flex items-center justify-center rounded-lg border border-[#e3e3e3] disabled:opacity-40 hover:bg-[#f8f8f8] transition-colors"
+                                    className="w-9 h-9 flex items-center justify-center rounded-lg border border-[#e3e3e3] disabled:opacity-40 hover:bg-[#f8f8f8] transition-colors"
                                 >
                                     <ChevronRight className="w-4 h-4" />
                                 </button>

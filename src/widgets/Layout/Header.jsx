@@ -1,11 +1,11 @@
-import { Search, Bell, CircleHelp, Plus } from 'lucide-react'; // Thu vien icon
+import { Bell, CircleHelp, Plus, Menu } from 'lucide-react'; // Thu vien icon
 import { useState, useRef, useEffect } from 'react'; // Hook trang thai, hook thay the cho bien, hook chay moi khi vao chuong trinh
 import { useNavigate } from 'react-router-dom'; // Hook dieu huong
 import { useAuth } from '../../entities/auth/AuthContext';
 import TenantSwitcher from './TenantSwitcher';
 import CreateStoreModal from './CreateStoreModal';
 
-export default function Header() {
+export default function Header({ onMenuClick }) {
     const [isProfileOpen, setIsProfileOpen] = useState(false); // xem profile co open ko
     const [isNotifOpen, setIsNotifOpen] = useState(false); // xem thong bao co open ko
     const [isCreateStoreOpen, setIsCreateStoreOpen] = useState(false);
@@ -44,28 +44,36 @@ export default function Header() {
         setIsProfileOpen(false);
     };
     return (<>
-    <header className="fixed top-0 right-0 w-[calc(100%-16rem)] z-40 flex justify-between items-center px-6 py-3 bg-white border-b border-[#e3e3e3] h-16">
-      <div className="flex items-center gap-3">
+    <header className="fixed left-0 right-0 top-0 z-40 flex h-16 items-center justify-between gap-3 border-b border-[#e3e3e3] bg-white/95 px-3 backdrop-blur sm:px-4 lg:left-64 lg:px-6">
+      <div className="flex min-w-0 items-center gap-2 sm:gap-3">
+        <button
+          type="button"
+          onClick={onMenuClick}
+          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-[#e3e3e3] text-slate-700 transition-colors hover:bg-[#f8f8f8] lg:hidden"
+          aria-label="Open sidebar"
+        >
+          <Menu className="h-5 w-5" />
+        </button>
         <TenantSwitcher />
         <button
           onClick={() => setIsCreateStoreOpen(true)}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#e3e3e3] bg-white hover:bg-[#f8f8f8] transition-colors text-sm font-medium text-slate-700"
+          className="flex h-10 shrink-0 items-center gap-1.5 rounded-lg border border-[#e3e3e3] bg-white px-3 text-sm font-medium text-slate-700 transition-colors hover:bg-[#f8f8f8]"
         >
           <Plus className="w-4 h-4" />
-          New Store
+          <span className="hidden sm:inline">New Store</span>
         </button>
       </div>
 
-      <div className="flex items-center gap-4">
+      <div className="flex shrink-0 items-center gap-1 sm:gap-2">
         <div className="relative" ref={notifRef}>
           <button onClick={() => {
             setIsNotifOpen(!isNotifOpen);
             setIsProfileOpen(false);
-        }} className="w-8 h-8 flex items-center justify-center rounded-full text-gray-600 hover:bg-gray-100 transition-colors">
+        }} className="w-10 h-10 flex items-center justify-center rounded-full text-gray-600 hover:bg-gray-100 transition-colors">
             <Bell className="w-5 h-5"/>
           </button>
           
-          {isNotifOpen && (<div className="absolute right-0 mt-2 w-72 bg-white rounded-xl shadow-lg border border-[#e3e3e3] z-50 overflow-hidden">
+          {isNotifOpen && (<div className="absolute right-0 mt-2 w-[min(calc(100vw-2rem),18rem)] bg-white rounded-xl shadow-lg border border-[#e3e3e3] z-50 overflow-hidden">
               <div className="px-4 py-3 border-b border-[#e3e3e3]">
                 <h3 className="text-sm font-semibold text-black">Notifications</h3>
               </div>
@@ -75,7 +83,7 @@ export default function Header() {
             </div>)}
         </div>
 
-        <button onClick={handleHelpCenter} className="w-8 h-8 flex items-center justify-center rounded-full text-gray-600 hover:bg-gray-100 transition-colors">
+        <button onClick={handleHelpCenter} className="w-10 h-10 flex items-center justify-center rounded-full text-gray-600 hover:bg-gray-100 transition-colors">
           <CircleHelp className="w-5 h-5"/>
         </button>
 
@@ -83,11 +91,11 @@ export default function Header() {
           <div onClick={() => {
             setIsProfileOpen(!isProfileOpen);
             setIsNotifOpen(false);
-        }} className="bg-black text-white rounded-full w-8 h-8 flex items-center justify-center font-semibold text-sm cursor-pointer hover:ring-2 hover:ring-gray-300 ring-offset-1 transition-all shrink-0">
+        }} className="bg-black text-white rounded-full w-10 h-10 flex items-center justify-center font-semibold text-sm cursor-pointer hover:ring-2 hover:ring-gray-300 ring-offset-1 transition-all shrink-0">
             {user?.email ? user.email.charAt(0).toUpperCase() : 'U'}
           </div>
 
-          {isProfileOpen && (<div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-[#e3e3e3] p-2 z-50">
+          {isProfileOpen && (<div className="absolute right-0 mt-2 w-[min(calc(100vw-2rem),14rem)] bg-white rounded-xl shadow-lg border border-[#e3e3e3] p-2 z-50">
               <div className="px-3 py-2 border-b border-[#e3e3e3] mb-1">
                 <p className="text-sm font-semibold text-black truncate">{user?.email || 'User'}</p>
                 <p className="text-xs text-gray-500 capitalize">{user?.role || 'Merchant'}</p>

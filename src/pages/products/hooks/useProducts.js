@@ -153,7 +153,7 @@ export function useAddProduct(tenantId, onSuccess, onClose) {
 
 // ─── useEditProduct ──────────────────────────────────────────────────────────
 
-export function useEditProduct(tenantId, productId, onSuccess, onClose) {
+export function useEditProduct(tenantId, productId, onSuccess) {
     const [isSavingProduct, setIsSavingProduct] = useState(false);
     const [productError, setProductError] = useState('');
     const [savingSkuId, setSavingSkuId] = useState(null);

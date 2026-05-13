@@ -13,7 +13,7 @@ export function ImageUploadPreview({
   className = ''
 }) {
   const [uploading, setUploading] = useState(false);
-  const [progress, setProgress] = useState({});
+  const [, setProgress] = useState({});
   const [previews, setPreviews] = useState([]);
   const [error, setError] = useState('');
 
@@ -99,7 +99,7 @@ export function ImageUploadPreview({
         <div className="flex flex-wrap gap-2">
           {[...previews.filter(p => !p.url), ...currentUrls.map((url, i) => ({ url, index: i, isUploaded: true }))].map((item, idx) => (
             <div key={item.isUploaded ? `uploaded-${item.index}` : `preview-${idx}`} 
-                 className="relative w-16 h-16 rounded-lg border border-[#e3e3e3] overflow-hidden group bg-slate-50">
+                className="relative w-16 h-16 rounded-lg border border-[#e3e3e3] overflow-hidden group bg-slate-50">
               <img 
                 src={item.preview || item.url} 
                 alt="preview" 
@@ -111,7 +111,7 @@ export function ImageUploadPreview({
                 type="button"
                 onClick={() => item.isUploaded ? removeImage(item.index) : null}
                 disabled={item.isUploaded ? false : true}
-                className="absolute top-1 right-1 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity disabled:opacity-0"
+                className="absolute top-1 right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white opacity-100 transition-opacity disabled:opacity-0 sm:opacity-0 sm:group-hover:opacity-100"
               >
                 <X className="w-3 h-3" />
               </button>
@@ -131,8 +131,8 @@ export function ImageUploadPreview({
       )}
 
       {/* Upload Input */}
-      <div className="flex items-center gap-2">
-        <label className={`flex-1 flex items-center gap-2 px-3 py-2 rounded-lg border-2 border-dashed cursor-pointer transition-colors
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+        <label className={`flex min-h-11 flex-1 cursor-pointer items-center gap-2 rounded-lg border-2 border-dashed px-3 py-2 transition-colors
           ${uploading ? 'border-slate-300 bg-slate-50 cursor-not-allowed' : 'border-[#e3e3e3] hover:border-black hover:bg-slate-50'}`}>
           <Upload className={`w-4 h-4 ${uploading ? 'text-slate-400' : 'text-slate-500'}`} />
           <span className="text-sm text-slate-600">
@@ -155,7 +155,7 @@ export function ImageUploadPreview({
             value={value}
             onChange={(e) => onChange(e.target.value)}
             placeholder={placeholder}
-            className="flex-1 px-3 py-2 rounded-lg border border-[#e3e3e3] text-sm outline-none focus:border-black font-mono transition-colors min-w-0"
+            className="min-h-11 min-w-0 flex-1 rounded-lg border border-[#e3e3e3] px-3 py-2 font-mono text-sm outline-none transition-colors focus:border-black"
           />
         )}
       </div>

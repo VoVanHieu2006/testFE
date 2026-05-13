@@ -47,7 +47,7 @@ export default function LivePreview({ themeData, pageData, activePage, storeData
   }, [themeData.typography.fontFamily]);
 
   const renderProductGrid = (products, compact = false) => (
-    <div className={`grid grid-cols-4 ${compact ? 'gap-4' : 'gap-7'}`}>
+    <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 ${compact ? 'gap-4' : 'gap-7'}`}>
       {products.map((product) => (
         <article
           key={product.id}
@@ -87,10 +87,10 @@ export default function LivePreview({ themeData, pageData, activePage, storeData
   );
 
   return (
-    <div className="h-full overflow-y-auto overflow-x-hidden bg-[#e5e7eb] p-6">
+    <div className="h-full overflow-y-auto overflow-x-hidden bg-[#e5e7eb] p-3 sm:p-6">
       <div className="mx-auto w-full max-w-[1280px]">
         <div
-          className="min-h-[800px] overflow-hidden shadow-2xl"
+          className="min-h-[720px] overflow-hidden shadow-2xl"
           style={{
             fontFamily: `"${themeData.typography.fontFamily}", sans-serif`,
             backgroundColor: themeData.colors.backgroundMain,
@@ -98,7 +98,7 @@ export default function LivePreview({ themeData, pageData, activePage, storeData
           }}
         >
           <header className="sticky top-0 z-40 border-b" style={{ backgroundColor: themeData.header.backgroundColor, color: themeData.header.textColor, borderColor: `${themeData.header.textColor}15` }}>
-            <div className="mx-auto flex w-full max-w-[1060px] items-center gap-10 px-4 py-3">
+            <div className="mx-auto flex w-full max-w-[1060px] flex-wrap items-center gap-4 px-4 py-3 lg:flex-nowrap lg:gap-10">
               <div className="flex items-center gap-2.5">
                 {storeData.logoUrl ? (
                   <img src={storeData.logoUrl} alt="Store logo" className="h-6 w-6 rounded object-cover" />
@@ -110,15 +110,15 @@ export default function LivePreview({ themeData, pageData, activePage, storeData
                 <span className="text-sm font-bold tracking-tight uppercase">{storeData.storeName}</span>
               </div>
 
-              <nav className="flex items-center gap-7 text-xs font-semibold">
+              <nav className="order-3 flex w-full items-center gap-4 overflow-x-auto text-xs font-semibold lg:order-none lg:w-auto lg:gap-7">
                 <span className={`cursor-default border-b pb-1 transition-opacity ${activePage === 'home' ? '' : 'border-transparent opacity-70'}`} style={{ borderColor: activePage === 'home' ? themeData.colors.primary : 'transparent', color: activePage === 'home' ? themeData.colors.primary : themeData.header.textColor }}>Home</span>
                 <span className={`cursor-default border-b pb-1 transition-opacity ${activePage === 'products' ? '' : 'border-transparent opacity-70'}`} style={{ borderColor: activePage === 'products' ? themeData.colors.primary : 'transparent', color: activePage === 'products' ? themeData.colors.primary : themeData.header.textColor }}>Shop / Products</span>
                 <span className={`cursor-default border-b pb-1 transition-opacity ${activePage === 'about' ? '' : 'border-transparent opacity-70'}`} style={{ borderColor: activePage === 'about' ? themeData.colors.primary : 'transparent', color: activePage === 'about' ? themeData.colors.primary : themeData.header.textColor }}>About Us</span>
                 <span className={`cursor-default border-b pb-1 transition-opacity ${activePage === 'contact' ? '' : 'border-transparent opacity-70'}`} style={{ borderColor: activePage === 'contact' ? themeData.colors.primary : 'transparent', color: activePage === 'contact' ? themeData.colors.primary : themeData.header.textColor }}>Contact</span>
               </nav>
 
-              <div className="ml-auto flex items-center gap-5">
-                <div className="flex w-[220px] items-center rounded-xl px-3 py-2" style={{ backgroundColor: '#f1f5f9' }}>
+              <div className="ml-auto flex items-center gap-3 lg:gap-5">
+                <div className="hidden w-[220px] items-center rounded-xl px-3 py-2 md:flex" style={{ backgroundColor: '#f1f5f9' }}>
                   <Search className="mr-2 h-4 w-4 shrink-0 text-gray-500" />
                   <input type="text" placeholder="Search products..." className="w-full border-none bg-transparent text-xs text-gray-900 outline-none placeholder:text-gray-500" />
                 </div>
@@ -131,12 +131,12 @@ export default function LivePreview({ themeData, pageData, activePage, storeData
           {activePage === 'home' && (
             <main className="mx-auto min-h-[600px] w-full max-w-[1060px] px-4 py-5">
               <section
-                className="relative flex h-[250px] flex-col justify-center overflow-hidden rounded-xl px-10"
+                className="relative flex min-h-[280px] flex-col justify-center overflow-hidden rounded-xl px-5 sm:h-[250px] sm:min-h-0 sm:px-10"
                 style={{ backgroundImage: `url(${pageData.home.heroImageUrl})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
               >
                 <div className="absolute inset-0" style={{ backgroundColor: `rgba(0,0,0,${pageData.home.heroOverlayOpacity})` }} />
                 <div className="z-10 mx-auto max-w-3xl text-center text-white">
-                  <h1 className="mb-4 text-[44px] font-extrabold leading-[1.08]">{pageData.home.title}</h1>
+                  <h1 className="mb-4 text-3xl font-extrabold leading-[1.08] sm:text-[44px]">{pageData.home.title}</h1>
                   <p className="mx-auto mb-6 max-w-[620px] text-base opacity-90">{pageData.home.subtitle}</p>
                   <button className="rounded-xl px-7 py-3 text-base font-semibold text-white transition-opacity hover:opacity-90" style={{ backgroundColor: themeData.colors.primary, borderRadius: `${themeData.layout.borderRadius}px` }}>
                     Shop Now
@@ -145,9 +145,9 @@ export default function LivePreview({ themeData, pageData, activePage, storeData
               </section>
 
               <section className="py-10">
-                <div className="mb-5 flex items-end justify-between">
+                <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
                   <div>
-                    <h2 className="mb-1 text-[34px] font-bold leading-none">{pageData.home.featuredTitle}</h2>
+                    <h2 className="mb-1 text-2xl font-bold leading-tight sm:text-[34px] sm:leading-none">{pageData.home.featuredTitle}</h2>
                     <p className="text-sm opacity-60">{pageData.home.featuredSubtitle}</p>
                   </div>
                   <span className="flex items-center gap-1 text-sm font-semibold" style={{ color: themeData.colors.primary }}>
@@ -158,8 +158,8 @@ export default function LivePreview({ themeData, pageData, activePage, storeData
               </section>
 
               <section className="pb-10 pt-2">
-                <h3 className="mb-4 text-[34px] font-bold leading-none">Shop by Category</h3>
-                <div className="grid grid-cols-4 gap-4">
+                <h3 className="mb-4 text-2xl font-bold leading-tight sm:text-[34px] sm:leading-none">Shop by Category</h3>
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                   {categoryCards.map((item) => (
                     <article key={item.name} className="group relative h-[210px] overflow-hidden rounded-xl">
                       <img src={item.image} alt={item.name} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
@@ -176,8 +176,8 @@ export default function LivePreview({ themeData, pageData, activePage, storeData
           )}
 
           {activePage === 'products' && (
-            <main className="mx-auto flex min-h-[600px] w-full max-w-[1060px] gap-8 px-4 py-6">
-              <aside className="w-[170px] shrink-0">
+            <main className="mx-auto flex min-h-[600px] w-full max-w-[1060px] flex-col gap-6 px-4 py-6 lg:flex-row lg:gap-8">
+              <aside className="w-full shrink-0 lg:w-[170px]">
                 <div className="flex items-center justify-between">
                   <h3 className="text-[22px] font-bold leading-none">Filters</h3>
                   <span className="text-[10px] font-bold uppercase" style={{ color: themeData.colors.primary }}>Clear all</span>
@@ -215,8 +215,8 @@ export default function LivePreview({ themeData, pageData, activePage, storeData
                 </div>
               </aside>
 
-              <section className="flex-1">
-                <div className="mb-4 flex items-center justify-between">
+              <section className="min-w-0 flex-1">
+                <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                   <p className="text-xs opacity-70">Showing 12 products</p>
                   <div className="flex items-center gap-2">
                     <span className="text-[10px] font-bold uppercase opacity-60">Sort by</span>
@@ -233,7 +233,7 @@ export default function LivePreview({ themeData, pageData, activePage, storeData
           {activePage === 'about' && (
             <main className="mx-auto w-full max-w-[1060px] px-4 py-9">
               <div className="mb-6 text-center">
-                <h1 className="text-[40px] font-bold leading-none">About {storeData.storeName}</h1>
+                <h1 className="text-3xl font-bold leading-tight sm:text-[40px] sm:leading-none">About {storeData.storeName}</h1>
                 <p className="mt-2 text-sm opacity-65">Curating the best modern essentials for your lifestyle.</p>
               </div>
 
@@ -246,7 +246,7 @@ export default function LivePreview({ themeData, pageData, activePage, storeData
                   ))}
                 </div>
 
-                <div className="mt-7 grid grid-cols-3 gap-6 border-t pt-5" style={{ borderColor: `${themeData.colors.textPrimary}18` }}>
+                <div className="mt-7 grid gap-5 border-t pt-5 sm:grid-cols-3 sm:gap-6" style={{ borderColor: `${themeData.colors.textPrimary}18` }}>
                   <div>
                     <h3 className="text-xl font-bold">Quality First</h3>
                     <p className="mt-1 text-xs opacity-70">We never compromise on materials or craftsmanship. Built to last.</p>
@@ -267,12 +267,12 @@ export default function LivePreview({ themeData, pageData, activePage, storeData
           {activePage === 'contact' && (
             <main className="mx-auto w-full max-w-[1060px] px-4 py-9">
               <div className="mb-7 text-center">
-                <h1 className="mb-2 text-[42px] font-bold leading-none">Contact Us</h1>
+                <h1 className="mb-2 text-3xl font-bold leading-tight sm:text-[42px] sm:leading-none">Contact Us</h1>
                 <p className="mx-auto max-w-[520px] text-sm opacity-65">We would love to hear from you. Send us a message and we will respond as soon as possible.</p>
               </div>
 
-              <div className="mx-auto max-w-[560px] rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
-                <div className="mb-4 grid grid-cols-2 gap-3">
+              <div className="mx-auto max-w-[560px] rounded-2xl border border-gray-100 bg-white p-4 shadow-sm sm:p-6">
+                <div className="mb-4 grid gap-3 sm:grid-cols-2">
                   <div>
                     <label className="mb-2 block text-[11px] font-semibold text-gray-700">First Name</label>
                     <input type="text" className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-black" placeholder="Jane" />
@@ -310,8 +310,8 @@ export default function LivePreview({ themeData, pageData, activePage, storeData
           )}
 
           <footer className="mt-auto border-t" style={{ backgroundColor: themeData.footer.backgroundColor, color: themeData.footer.textColor, borderColor: `${themeData.footer.textColor}20` }}>
-            <div className="mx-auto grid w-full max-w-[1060px] grid-cols-5 gap-10 px-4 py-10">
-              <div className="col-span-2">
+            <div className="mx-auto grid w-full max-w-[1060px] grid-cols-1 gap-8 px-4 py-10 sm:grid-cols-2 lg:grid-cols-5 lg:gap-10">
+              <div className="sm:col-span-2">
                 <div className="mb-4 flex items-center gap-2.5">
                   {storeData.logoUrl ? (
                     <img src={storeData.logoUrl} alt="Store logo" className="h-6 w-6 rounded object-cover" />
@@ -359,7 +359,7 @@ export default function LivePreview({ themeData, pageData, activePage, storeData
             </div>
 
             <div className="border-t" style={{ borderColor: `${themeData.footer.textColor}20` }}>
-              <div className="mx-auto flex w-full max-w-[1060px] items-center justify-between px-4 py-3 text-xs opacity-60">
+              <div className="mx-auto flex w-full max-w-[1060px] flex-col gap-2 px-4 py-3 text-xs opacity-60 sm:flex-row sm:items-center sm:justify-between">
                 <p>© {new Date().getFullYear()} {storeData.storeName}. All rights reserved.</p>
                 <div className="flex gap-6">
                   <span>Privacy Policy</span>
